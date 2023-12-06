@@ -13,6 +13,7 @@ function preload() {
     malosanimaciones = [zombi, zombicubeta, calavera]
     batalla = loadSound("batalla.mp3")
     menu = loadSound("menu.mp3")
+    gatoataca = loadAnimation("recursos/ca1.png","recursos/ca2.png","recursos/ca3.png","recursos/ca4.png")
 }
 
 function setup() {
@@ -26,7 +27,9 @@ function setup() {
     gato = createSprite(ancho / 2, alto - 95)
     gato.addAnimation("gatoquieto", gatoquieto)
     gato.addAnimation("gatocaminar", gatocaminar)
+    gato.addAnimation("gatoataca", gatoataca)
     gato.scale = 1.34
+    gato.vida=10
     batalla.play()
     batalla.setVolume(0.4)
     enemigos = createGroup()
@@ -60,6 +63,10 @@ function setup() {
 function draw() {
     background(200);
     drawSprites();
+    fill("black")
+    rect(25,25,220,25)
+    fill("red")
+    rect(25,25,gato.vida*22,25)
     if (keyDown(RIGHT_ARROW)) {
         gato.x += 6
         gato.changeAnimation("gatocaminar", gatocaminar)
@@ -76,10 +83,22 @@ function draw() {
         gato.changeAnimation("gatocaminar", gatocaminar)
         gato.mirrorX(1)
     }
+    if (keyDown(77)){
+        gato.changeAnimation("gatoataca", gatoataca)
+        
+    }
+    if (keyWentUp(77)){
+        gato.changeAnimation("gatoquieto", gatoquieto)
+        
+    }
     if (keyDown(DOWN_ARROW)) {
         gato.y += 6
         gato.changeAnimation("gatocaminar", gatocaminar)
         gato.mirrorX(1)
+    }
+    if (keyWentUp("UP_ARROW")||keyWentUp("DOWN_ARROW")||keyWentUp("LEFT_ARROW")||keyWentUp("RIGHT_ARROW")){
+        gato.changeAnimation("gatoquieto", gatoquieto)
+        
     }
     if (frameCount % 45 == 0) {
 
@@ -89,6 +108,7 @@ function draw() {
         })
 
     }
+    gato.overlap(enemigos,quitarvida)
 }
 function perseguir(p1, p2) {
     if (p2.x < p1.x) {
@@ -100,4 +120,16 @@ function perseguir(p1, p2) {
         p2.velocityX = random(-2, -4.7)
     }
 }
+function quitarvida(gato,enemigo){
+    if(gato.getAnimationLabel()=="gatoataca"){
+        enemigo.destroy()
 
+    }
+    else{
+        gato.vida-=0.1
+    }
+    if(gato.vida<=0){
+        gato.remove()
+        gato.vida=0
+    }
+}
