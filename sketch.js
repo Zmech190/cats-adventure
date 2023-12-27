@@ -19,6 +19,8 @@ function preload() {
     menu = loadSound("menu.mp3")
     gatoataca = loadAnimation("recursos/ca1.png","recursos/ca2.png","recursos/ca3.png","recursos/ca4.png")
     defeat = loadSound("defeat.mp3")
+    repisaimg = loadImage("recursos/climber.png")
+    flechaimg = loadImage("recursos/flecha.png")
 }
 
 function setup() {
@@ -35,13 +37,20 @@ function setup() {
     gato.addAnimation("gatoataca", gatoataca)
     gato.scale = 1.34
     gato.vida=10
-    batalla.play()
-    batalla.setVolume(0.4)
+    menu.play()
+    menu.setVolume(0.4)
     suelo=createSprite(ancho/2,alto - 35,ancho,10)
     suelo.visible=false
     bordes=createEdgeSprites()
     enemigos = createGroup()
-   
+   for (let numrepisa = 0; numrepisa < 16; numrepisa++) {
+    repisa = createSprite(90*numrepisa,5,50,20)
+    repisa.addImage(repisaimg)
+    
+   }
+   flecha=createSprite(ancho-250,alto/2)
+   flecha.addImage(flechaimg)
+   flecha.scale=0.45
 }
 
 function draw() {
@@ -112,6 +121,11 @@ function draw() {
         fill("white")
         textSize(90)
         text("perdiste",ancho/2-textWidth("perdiste")/2,alto/2)
+    }
+    if(nivel==0){
+        textSize(90)
+        fill("white")
+        text("cat \nadventure",ancho/2-210,alto/2-100)
     }
 }
 function perseguir(p1, p2) {
