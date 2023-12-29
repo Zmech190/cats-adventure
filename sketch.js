@@ -4,13 +4,14 @@ var ataque=0
 var estado="play"
 var saltando= false
 var nivel=0
-ecenarios=["inicio","piso1","piso2"]
+
 function preload() {
     gatoquieto = loadAnimation("recursos/c3.png")
     gatocaminar = loadAnimation("recursos/c3.png", "recursos/c2.png", "recursos/c3.png", "recursos/c4.png")
     inicio = loadImage("recursos/inicio1.png")
     piso1 = loadImage("recursos/piso 1.jpg")
     piso2 = loadImage("recursos/piso 2.jpg")
+    ecenarios=[piso1,piso2]
     zombi = loadAnimation("recursos/z2.png", "recursos/z3.png", "recursos/z4.png", "recursos/z5.png", "recursos/z6.png", "recursos/z7.png")
     zombicubeta = loadAnimation("recursos/zo1.png", "recursos/zo2.png", "recursos/zo3.png", "recursos/zo4.png", "recursos/zo5.png", "recursos/zo6.png")
     calavera = loadAnimation("recursos/ghost-jumping.png", "recursos/ghost-standing.png")
@@ -29,6 +30,7 @@ function setup() {
     fondo = createSprite(ancho / 2, alto / 2)
     fondo.addImage(inicio)
     piso1.resize(ancho, alto)
+    piso2.resize(ancho, alto)
     fondo1 = createSprite(ancho / 2, -alto / 2)
     fondo1.addImage(piso1)
     gato = createSprite(ancho / 2, alto - 95)
@@ -43,10 +45,11 @@ function setup() {
     suelo.visible=false
     bordes=createEdgeSprites()
     enemigos = createGroup()
+    repisas=createGroup()
    for (let numrepisa = 0; numrepisa < 16; numrepisa++) {
     repisa = createSprite(90*numrepisa,5,50,20)
     repisa.addImage(repisaimg)
-    
+    repisas.add(repisa)
    }
    flecha=createSprite(ancho-250,alto/2)
    flecha.addImage(flechaimg)
@@ -63,12 +66,43 @@ function draw() {
    if(gato.isTouching(bordes[1])){
     fondo.velocityY=12
     fondo1.velocityY=12
+    nivel++
+    gato.x=ancho/2
+    flecha.visible=false
+    repisas.forEach(element => {
+        element.velocityY=12
+    });
+    
+   }
+   if(enemigos.length==0){
+    flecha.visible=true
+   }
+   else{
+    flecha.visible=false
    }
    if(fondo.y>=alto+alto/2){
     fondo.velocityY=0
     fondo1.velocityY=0
     fondo.y=-alto/2
+    fondo1.y=alto/2
     crearmalos()
+    repisas.forEach(element => {
+        element.velocityY=0
+        element.y=5
+    });
+    fondo.addImage(random(ecenarios))
+   }
+   if(fondo1.y>=alto+alto/2){
+    fondo.velocityY=0
+    fondo1.velocityY=0
+    fondo1.y=-alto/2
+    fondo.y=alto/2
+    crearmalos()
+    repisas.forEach(element => {
+        element.velocityY=0
+        element.y=5
+    });
+    fondo1.addImage(random(ecenarios))
    }
     gato.collide(bordes)
     gato.collide(suelo,tocarsuelo)
@@ -151,7 +185,7 @@ function quitarvida(gato,enemigo){
     }
     if(gato.vida<=0){
         gato.remove()
-        gato.vida=0
+        gato.vida=0.00001
         estado="perdiste"
         batalla.stop()
         defeat.play()
@@ -163,7 +197,8 @@ function tocarsuelo(gato,suelo){
     saltando=false
 }
 function crearmalos(){
-    for (var i = 0; i < random(4, 16); i++) {
+    horda=random(4,16)
+    for (var i = 0; i < horda; i++) {
         malo = createSprite(random(ancho * 0.75, ancho * 2.5), alto - 95, 50, 50)
         
         
