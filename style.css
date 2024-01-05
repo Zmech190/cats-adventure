@@ -6,3 +6,13 @@ html, body {
 canvas {
   display: block;
 }
+#instrucciones{
+  width: 260px;
+  height: 140px;
+  background-image: url(recursos/pizarra.png);
+  background-size: cover;
+  position: absolute;
+  top: 150px;
+  left: 50px;
+  z-index: 100;
+}

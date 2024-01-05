@@ -67,6 +67,12 @@ function draw() {
     fondo.velocityY=12
     fondo1.velocityY=12
     nivel++
+    if(nivel==1){
+        menu.stop()
+        batalla.play()
+        batalla.setVolume(0.4)
+        document.getElementById("instrucciones").style.display="none"
+    }
     gato.x=ancho/2
     flecha.visible=false
     repisas.forEach(element => {
@@ -188,6 +194,7 @@ function quitarvida(gato,enemigo){
         gato.vida=0.00001
         estado="perdiste"
         batalla.stop()
+        menu.stop()
         defeat.play()
         defeat.setVolume(0.4)
 
