@@ -6,7 +6,7 @@ html, body {
 canvas {
   display: block;
 }
-#instrucciones{
+#instrucciones,#instrucciones2{
   width: 260px;
   height: 140px;
   background-image: url(recursos/pizarra.png);
@@ -15,4 +15,36 @@ canvas {
   top: 150px;
   left: 50px;
   z-index: 100;
+  font-family: 'Indie Flower', cursive;
+  color: white;
+  padding-left: 20px;
+  
+}
+#instrucciones2{
+  top: 360px;
+}
+h2{
+  margin: 10px;
+}
+img{
+  width: 105px;
+  position:absolute;
+  right: 15px;
+  top: 27px;
+}
+.izquierda{
+  left: 25px;
+  top: 37px;
+  width: 95px;
+}
+.acomodo{
+  left: 25px;
+  top: 49px;
+  width: 150px;
+}
+#titulo{
+  width: 450px;
+  position: absolute;
+  top: 15%;
+  left: 32%;
 }

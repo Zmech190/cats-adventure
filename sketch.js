@@ -72,6 +72,8 @@ function draw() {
         batalla.play()
         batalla.setVolume(0.4)
         document.getElementById("instrucciones").style.display="none"
+        document.getElementById("instrucciones2").style.display="none"
+        document.getElementById("titulo").style.display="none"
     }
     gato.x=ancho/2
     flecha.visible=false
@@ -162,11 +164,7 @@ function draw() {
         textSize(90)
         text("perdiste",ancho/2-textWidth("perdiste")/2,alto/2)
     }
-    if(nivel==0){
-        textSize(90)
-        fill("white")
-        text("cat \nadventure",ancho/2-210,alto/2-100)
-    }
+   
 }
 function perseguir(p1, p2) {
     if (p2.x < p1.x) {
