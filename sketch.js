@@ -63,7 +63,7 @@ function draw() {
     rect(25,25,220,25)
     fill("red")
     rect(25,25,gato.vida*22,25)
-   if(gato.isTouching(bordes[1])){
+   if(gato.isTouching(bordes[1])&&enemigos.length==0){
     fondo.velocityY=12
     fondo1.velocityY=12
     nivel++
@@ -132,7 +132,7 @@ function draw() {
         gato.mirrorX(1)
     }
     gato.velocityY += 0.7
-    if (keyWentUp(77)){
+    if (keyWentUp(77)&&gato.getAnimationLabel()!="gatoataca"){
         gato.changeAnimation("gatoataca", gatoataca)
         gato.animation.looping=false
         gato.animation.changeFrame(0)
@@ -141,6 +141,7 @@ function draw() {
     if (gato.getAnimationLabel()=="gatoataca"&&gato.animation.getFrame()==gato.animation.getLastFrame()){
         gato.changeAnimation("gatoquieto", gatoquieto)
         gato.animation.looping=true
+        
         
     }
    
@@ -178,7 +179,7 @@ function perseguir(p1, p2) {
 }
 function quitarvida(gato,enemigo){
     if(gato.getAnimationLabel()=="gatoataca"){
-        enemigo.vida-=2
+        enemigo.vida-=1
         if(enemigo.vida<=0){
             enemigo.destroy()
         }
@@ -202,7 +203,7 @@ function tocarsuelo(gato,suelo){
     saltando=false
 }
 function crearmalos(){
-    horda=random(4,16)
+    horda=random(3,13)
     for (var i = 0; i < horda; i++) {
         malo = createSprite(random(ancho * 0.75, ancho * 2.5), alto - 95, 50, 50)
         
@@ -212,18 +213,18 @@ function crearmalos(){
                 malo.addAnimation("caminar", zombi)
                 malo.scale = 3.3
                 malo.mirrorX(-1)
-                malo.vida=6
+                malo.vida=10
                 break
             case zombicubeta:
                 malo.addAnimation("caminar", zombicubeta)
                 malo.scale = 3.3
                 malo.mirrorX(-1)
-                malo.vida=15
+                malo.vida=20
                 break
             case calavera:
                 malo.addAnimation("caminar", calavera)
                 malo.scale = 0.6
-                malo.vida=4
+                malo.vida=6
                 break
         }
 
