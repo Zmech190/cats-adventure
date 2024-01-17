@@ -5,6 +5,18 @@ var estado="play"
 var saltando= false
 var nivel=0
 
+var firebaseConfig = {
+  apiKey: "AIzaSyCgqxH1wAC4__RGw6t3_yJxwGKMNBGfFZs",
+  authDomain: "cat-adventure-stats.firebaseapp.com",
+  databaseURL: "https://cat-adventure-stats-default-rtdb.firebaseio.com",
+  projectId: "cat-adventure-stats",
+  storageBucket: "cat-adventure-stats.appspot.com",
+  messagingSenderId: "659403843140",
+  appId: "1:659403843140:web:961897a82faaf0e0e5be11"
+};
+
+
+firebase.initializeApp(firebaseConfig);
 function preload() {
     gatoquieto = loadAnimation("recursos/c3.png")
     gatocaminar = loadAnimation("recursos/c3.png", "recursos/c2.png", "recursos/c3.png", "recursos/c4.png")
@@ -15,7 +27,9 @@ function preload() {
     zombi = loadAnimation("recursos/z2.png", "recursos/z3.png", "recursos/z4.png", "recursos/z5.png", "recursos/z6.png", "recursos/z7.png")
     zombicubeta = loadAnimation("recursos/zo1.png", "recursos/zo2.png", "recursos/zo3.png", "recursos/zo4.png", "recursos/zo5.png", "recursos/zo6.png")
     calavera = loadAnimation("recursos/ghost-jumping.png", "recursos/ghost-standing.png")
-    malosanimaciones = [zombi, zombicubeta, calavera]
+    angel = loadAnimation("recursos/ga1.png","recursos/ga2.png","recursos/ga3.png")
+    ddode = loadAnimation("recursos/dd1.png","recursos/dd2.png","recursos/dd3.png")
+    malosanimaciones = [zombi, zombicubeta, calavera, angel, ddode]
     batalla = loadSound("batalla.mp3")
     menu = loadSound("menu.mp3")
     gatoataca = loadAnimation("recursos/ca1.png","recursos/ca2.png","recursos/ca3.png","recursos/ca4.png")
@@ -38,7 +52,7 @@ function setup() {
     gato.addAnimation("gatocaminar", gatocaminar)
     gato.addAnimation("gatoataca", gatoataca)
     gato.scale = 1.34
-    gato.vida=10
+    gato.vida=13
     menu.play()
     menu.setVolume(0.4)
     suelo=createSprite(ancho/2,alto - 35,ancho,10)
@@ -60,7 +74,7 @@ function draw() {
     background(200);
     drawSprites();
     fill("black")
-    rect(25,25,220,25)
+    rect(25,25,286,25)
     fill("red")
     rect(25,25,gato.vida*22,25)
    if(gato.isTouching(bordes[1])&&enemigos.length==0){
@@ -75,7 +89,8 @@ function draw() {
         document.getElementById("instrucciones2").style.display="none"
         document.getElementById("titulo").style.display="none"
     }
-    gato.x=ancho/2
+    gato.visible=false
+    gato.x=20
     flecha.visible=false
     repisas.forEach(element => {
         element.velocityY=12
@@ -93,6 +108,7 @@ function draw() {
     fondo1.velocityY=0
     fondo.y=-alto/2
     fondo1.y=alto/2
+    gato.visible=true
     crearmalos()
     repisas.forEach(element => {
         element.velocityY=0
@@ -105,6 +121,7 @@ function draw() {
     fondo1.velocityY=0
     fondo1.y=-alto/2
     fondo.y=alto/2
+    gato.visible=true
     crearmalos()
     repisas.forEach(element => {
         element.velocityY=0
@@ -179,36 +196,36 @@ function perseguir(p1, p2) {
 }
 function quitarvida(gato,enemigo){
     if(gato.getAnimationLabel()=="gatoataca"){
-        enemigo.vida-=1
+        enemigo.vida-=1.5
         if(enemigo.vida<=0){
             enemigo.destroy()
         }
 
     }
     else{
-        gato.vida-=0.1
+        gato.vida-=0.07
     }
     if(gato.vida<=0){
         gato.remove()
-        gato.vida=0.00001
+        gato.vida=0.000000001
         estado="perdiste"
         batalla.stop()
         menu.stop()
         defeat.play()
         defeat.setVolume(0.4)
-
+        firebase.database().ref().child("score").update({nivel:nivel})
     }
 }
 function tocarsuelo(gato,suelo){
     saltando=false
 }
 function crearmalos(){
-    horda=random(3,13)
+    horda=random(3,11)
     for (var i = 0; i < horda; i++) {
         malo = createSprite(random(ancho * 0.75, ancho * 2.5), alto - 95, 50, 50)
         
         
-        switch (malosanimaciones[Math.round(random(0, 2))]) {
+        switch (random(malosanimaciones)) {
             case zombi:
                 malo.addAnimation("caminar", zombi)
                 malo.scale = 3.3
@@ -226,6 +243,16 @@ function crearmalos(){
                 malo.scale = 0.6
                 malo.vida=6
                 break
+            case angel:
+                malo.addAnimation("caminar", angel)
+                malo.scale=1.7
+                malo.vida=1
+                break
+            case ddode:
+                malo.addAnimation("caminar", ddode)  
+                malo.scale=1.7
+                malo.vida=10
+                break  
         }
 
         
