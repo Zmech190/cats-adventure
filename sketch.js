@@ -175,13 +175,6 @@ function draw() {
 
     }
     gato.overlap(enemigos,quitarvida)
-    if(estado=="perdiste"){
-        fill("black")
-        rect(300,0,ancho-600,alto)
-        fill("white")
-        textSize(90)
-        text("perdiste",ancho/2-textWidth("perdiste")/2,alto/2)
-    }
    
 }
 function perseguir(p1, p2) {
@@ -213,7 +206,8 @@ function quitarvida(gato,enemigo){
         menu.stop()
         defeat.play()
         defeat.setVolume(0.4)
-        firebase.database().ref().child("score").update({nivel:nivel})
+        
+        document.getElementById("derrota").style.display="block"
     }
 }
 function tocarsuelo(gato,suelo){
@@ -262,4 +256,9 @@ function crearmalos(){
 }
 function listaenemigos(gato,bordes){
 
+}
+function guardar(){
+    nickname=document.getElementById("nickname").value
+    firebase.database().ref().child("nivel").update({[nickname]:nivel})
+    document.getElementById("derrota").style.display="none"
 }

@@ -48,3 +48,36 @@ img{
   top: 15%;
   left: 32%;
 }
+#derrota{
+  width: 70%;
+  height: 100vh;
+  position: absolute;
+  background-color: black;
+  color: white;
+  margin:  auto;
+  left: 0%;
+  right: 0%;
+  text-align: center;
+  display: none;
+}
+#derrota h1{
+  font-size: 55px;
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  transform: translateY(35%);
+  text-align: center;
+}
+#derrota div{
+
+  width: 55%;
+  position: absolute;
+  transform: translateY(190%);
+  text-align: center;
+  border: 5px rgb(63, 16, 16) ridge;
+  background-color: rgb(41, 39, 39);
+  margin:  auto;
+  left: 0%;
+  right: 0%;
+  padding: 80px;
+}
