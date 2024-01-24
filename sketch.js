@@ -29,9 +29,12 @@ function preload() {
     calavera = loadAnimation("recursos/ghost-jumping.png", "recursos/ghost-standing.png")
     angel = loadAnimation("recursos/ga1.png","recursos/ga2.png","recursos/ga3.png")
     ddode = loadAnimation("recursos/dd1.png","recursos/dd2.png","recursos/dd3.png")
+    osocamina = loadAnimation("recursos/oso_0.png","recursos/oso_1.png", "recursos/oso_2.png", "recursos/oso_3.png", "recursos/oso_4.png", "recursos/oso_5.png")
+    osoataca = loadAnimation ("recursos/oso_a1.png","recursos/oso_a2.png", "recursos/oso_a3.png")
     malosanimaciones = [zombi, zombicubeta, calavera, angel, ddode]
     batalla = loadSound("batalla.mp3")
     menu = loadSound("menu.mp3")
+    osomusica = loadSound("osomusica.mp3")
     gatoataca = loadAnimation("recursos/ca1.png","recursos/ca2.png","recursos/ca3.png","recursos/ca4.png")
     defeat = loadSound("defeat.mp3")
     repisaimg = loadImage("recursos/climber.png")
@@ -59,6 +62,7 @@ function setup() {
     suelo.visible=false
     bordes=createEdgeSprites()
     enemigos = createGroup()
+    jefes = createGroup()
     repisas=createGroup()
    for (let numrepisa = 0; numrepisa < 16; numrepisa++) {
     repisa = createSprite(90*numrepisa,5,50,20)
@@ -108,8 +112,18 @@ function draw() {
     fondo1.velocityY=0
     fondo.y=-alto/2
     fondo1.y=alto/2
+    gato.vida+=3
+    if(gato.vida>13){
+        gato.vida=13
+    }
     gato.visible=true
-    crearmalos()
+    if(nivel%10==0){
+        crearjefe()
+    }
+    else{
+        crearmalos()
+    }
+    
     repisas.forEach(element => {
         element.velocityY=0
         element.y=5
@@ -121,8 +135,17 @@ function draw() {
     fondo1.velocityY=0
     fondo1.y=-alto/2
     fondo.y=alto/2
+    gato.vida+=3
+    if(gato.vida>13){
+        gato.vida=13
+    }
     gato.visible=true
-    crearmalos()
+    if(nivel%10==0){
+        crearjefe()
+    }
+    else{
+        crearmalos()
+    }
     repisas.forEach(element => {
         element.velocityY=0
         element.y=5
@@ -172,9 +195,13 @@ function draw() {
             perseguir(gato, malo)
             
         })
-
+        jefes.forEach(jefe => {
+            perseguir(gato, jefe)
+            
+        })
     }
     gato.overlap(enemigos,quitarvida)
+    gato.overlap(jefes,quitarvida)
    
 }
 function perseguir(p1, p2) {
@@ -204,6 +231,7 @@ function quitarvida(gato,enemigo){
         estado="perdiste"
         batalla.stop()
         menu.stop()
+        osomusica.stop()
         defeat.play()
         defeat.setVolume(0.4)
         
@@ -261,4 +289,19 @@ function guardar(){
     nickname=document.getElementById("nickname").value
     firebase.database().ref().child("nivel").update({[nickname]:nivel})
     document.getElementById("derrota").style.display="none"
+}
+function crearjefe(){
+    switch(nivel){
+        case 10:
+            oso=createSprite(ancho-10,alto-210)
+            oso.addAnimation("caminar", osocamina)
+            oso.addAnimation("ataca", osoataca)
+            oso.scale=2.3
+            oso.mirrorX(-1)
+            oso.vida=200
+            batalla.stop()
+            osomusica.play()
+            jefes.add(oso)
+            osomusica.setVolume(0.7)
+    }
 }
