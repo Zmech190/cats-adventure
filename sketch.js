@@ -92,6 +92,7 @@ function draw() {
         document.getElementById("instrucciones").style.display="none"
         document.getElementById("instrucciones2").style.display="none"
         document.getElementById("titulo").style.display="none"
+        document.getElementById("stats").style.display="none"
     }
     gato.visible=false
     gato.x=20
@@ -112,7 +113,7 @@ function draw() {
     fondo1.velocityY=0
     fondo.y=-alto/2
     fondo1.y=alto/2
-    gato.vida+=3
+    gato.vida+=2
     if(gato.vida>13){
         gato.vida=13
     }
@@ -135,7 +136,7 @@ function draw() {
     fondo1.velocityY=0
     fondo1.y=-alto/2
     fondo.y=alto/2
-    gato.vida+=3
+    gato.vida+=2
     if(gato.vida>13){
         gato.vida=13
     }
@@ -289,6 +290,7 @@ function guardar(){
     nickname=document.getElementById("nickname").value
     firebase.database().ref().child("nivel").update({[nickname]:nivel})
     document.getElementById("derrota").style.display="none"
+    location.reload()
 }
 function crearjefe(){
     switch(nivel){
@@ -298,10 +300,21 @@ function crearjefe(){
             oso.addAnimation("ataca", osoataca)
             oso.scale=2.3
             oso.mirrorX(-1)
-            oso.vida=200
+            oso.vida=400
             batalla.stop()
             osomusica.play()
             jefes.add(oso)
-            osomusica.setVolume(0.7)
+            osomusica.setVolume(1.2)
     }
+}
+function marcador() {
+    firebase.database().ref("nivel").orderByValue().limitToLast(5).on('value', function (registros) {
+        registros.forEach(function (jugador) {
+            console.log(jugador.key + " : " + jugador.val());
+            document.getElementById("stats").innerHTML+="<h3>"+jugador.key + " : " + jugador.val()+"</h3>"
+        });
+    });
+}
+function reiniciar(){
+    location.reload()
 }

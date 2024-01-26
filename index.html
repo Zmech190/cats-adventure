@@ -16,7 +16,7 @@
 <script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
 </head>
 
-<body>
+<body onload="marcador()">
     <div id="instrucciones">
         <h2>controles</h2>
         <img src="recursos\teclas-1.png.png" alt="">
@@ -27,12 +27,18 @@
         <img src="recursos\teclas-3.png.png" alt="">
         <img src="recursos\pixelca2.png" class="acomodo">
     </div>
+    <div id="stats">
+        <h2>records :</h2>
+    </div>
     <img src="recursos\cat_adventure_logo.png" id="titulo">
     <div id="derrota">
         <h1>perdiste</h1>
         <div>
             <input type="text" id="nickname" placeholder="escribe tu nickname">
-            <button onclick="guardar()">guardar rDecord</button>
+            <button onclick="guardar()">guardar record</button>
+            <br>
+            <br>
+            <button onclick="reiniciar()">volver a empezar</button>
         </div>
     </div>
     <script src="sketch.js"></script>
