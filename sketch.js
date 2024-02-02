@@ -97,6 +97,7 @@ function draw() {
             osomusica.stop()
             futmusica.stop()
             discomusica.stop()
+            zombistainsong.stop()
             batalla.setVolume(0.4)
             document.getElementById("instrucciones").style.display = "none"
             document.getElementById("instrucciones2").style.display = "none"
@@ -344,7 +345,7 @@ function crearjefe() {
             zombistein.vida = 450
             batalla.stop()
             jefes.add(zombistein)
-            osomusica.setVolume(1.2)
+            zombistainsong.setVolume(1.2)
 
 
     }
