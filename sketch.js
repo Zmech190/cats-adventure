@@ -1,4 +1,6 @@
 var alto = screen.height - 130
+var ataquesorpresa = 0
+var ataquetimer = 0
 var ancho = screen.width
 var ataque = 0
 var estado = "play"
@@ -207,10 +209,27 @@ function draw() {
 
         })
         jefes.forEach(jefe => {
+           
             perseguir(gato, jefe)
-
+            ataqueespecial(jefe)
         })
     }
+    jefes.forEach(jefe=>{
+        if(jefe.guardarfr+33==frameCount){
+            switch(jefe.tipo){
+                case "oso":
+                    jefe.changeAnimation("caminar")
+                    jefe.y=alto-210
+                    break
+                case "futzom":
+                    jefe.invensible=false
+                    console.log("no es invencible")
+                    perseguir(gato,jefe)
+                    break
+            }
+            
+        }
+    })
     gato.overlap(enemigos, quitarvida)
     gato.overlap(jefes, quitarvida)
     musica()
@@ -227,7 +246,7 @@ function perseguir(p1, p2) {
     }
 }
 function quitarvida(gato, enemigo) {
-    if (gato.getAnimationLabel() == "gatoataca") {
+    if (gato.getAnimationLabel() == "gatoataca"&&enemigo.invensible==false) {
         enemigo.vida -= 1.5
         if (enemigo.vida <= 0) {
             enemigo.destroy()
@@ -259,7 +278,7 @@ function crearmalos() {
     horda = random(3, 11)
     for (var i = 0; i < horda; i++) {
         malo = createSprite(random(ancho * 0.75, ancho * 2.5), alto - 95, 50, 50)
-
+        malo.invensible=false
 
         switch (random(malosanimaciones)) {
             case zombi:
@@ -313,42 +332,54 @@ function crearjefe() {
             oso.addAnimation("ataca", osoataca)
             oso.scale = 2.3
             oso.mirrorX(-1)
-            oso.vida = 400
+            oso.vida = 500
             batalla.stop()
+            oso.invensible=false
+            oso.tipo="oso"
             jefes.add(oso)
             osomusica.setVolume(1.2)
             break
         case 20:
-            futzom = createSprite(ancho - 10, alto - 100)
+            futzom = createSprite(ancho - 10, alto - 110)
             futzom.addAnimation("caminar", futbolz)
             futzom.scale = 1.3
-            futzom.vida = 250
+            futzom.vida = 200
             futzom.mirrorX(1)
             batalla.stop()
             osomusica.stop()
             futmusica.setVolume(0.7)
+            futzom.invensible=false
+            futzom.tipo="futzom"
             jefes.add(futzom)
             break
         case 30:
-            zombidis = createSprite(ancho - 10, alto - 100)
+            zombidis = createSprite(ancho - 10, alto - 120)
             zombidis.addAnimation("caminar", discoZ)
             zombidis.scale = 1.3
-            zombidis.vida = 200
+            zombidis.vida = 350
             batalla.stop()
             discomusica.setVolume(0.7)
+            zombidis.invensible=false
+            zombidis.tipo="zombidis"
             jefes.add(zombidis)
             break
         case 40:
             zombistein = createSprite(ancho + 2350, alto - 250)
             zombistein.addAnimation("caminar", zombi40)
             zombistein.scale = 2.5
-            zombistein.vida = 450
+            zombistein.vida = 800
             batalla.stop()
+            zombistein.invensible=false
+            zombistein.tipo="zombistein"
             jefes.add(zombistein)
             zombistainsong.setVolume(1.2)
+            break
+        
 
 
     }
+    ataquesorpresa=int(random(1,2))
+    ataquetimer=0
 }
 function marcador() {
     firebase.database().ref("nivel").orderByValue().limitToLast(5).on('value', function (registros) {
@@ -405,5 +436,29 @@ function musica() {
         futmusica.stop()
         discomusica.stop()
         zombistainsong.stop()
+    }
+}
+function ataqueespecial(jefe){
+    ataquetimer++
+    if(ataquetimer==ataquesorpresa){
+        switch(jefe.tipo){
+            case "oso":
+                jefe.changeAnimation("ataca")
+                
+                jefe.y=alto-270
+                break
+            case "futzom":
+                if(jefe.velocityX>0){
+                    jefe.velocityX=16
+                }
+                else{
+                    jefe.velocityX=-16
+                }
+                jefe.invensible=true
+        }
+        jefe.guardarfr=frameCount
+        ataquesorpresa=int(random(2,4))
+        console.log("ataque hecho")
+        ataquetimer=0
     }
 }
