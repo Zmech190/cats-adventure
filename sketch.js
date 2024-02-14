@@ -36,6 +36,10 @@ function preload() {
     futbolz = loadAnimation("recursos/zf_0.png", "recursos/zf_1.png", "recursos/zf_2.png", "recursos/zf_3.png", "recursos/zf_4.png", "recursos/zf_5.png", "recursos/zf_6.png", "recursos/zf_7.png")
     discoZ = loadAnimation("recursos/zd_0.png", "recursos/zd_1.png", "recursos/zd_2.png", "recursos/zd_3.png", "recursos/zd_4.png", "recursos/zd_5.png")
     zombi40 = loadAnimation("recursos/zombistein_0.png","recursos/zombistein_1.png","recursos/zombistein_2.png","recursos/zombistein_3.png","recursos/zombistein_4.png","recursos/zombistein_5.png","recursos/zombistein_6.png","recursos/zombistein_7.png")
+    suplente = loadAnimation("recursos/suplente_0.png","recursos/suplente_1.png","recursos/suplente_2.png","recursos/suplente_3.png")
+    pistdisc = loadImage("recursos/pista disco px.png")
+    luzdis = loadImage("recursos/luz pixeleada c.png")
+    boladis = loadAnimation("recursos/boladis_0.png","recursos/boladis_1.png")
     malosanimaciones = [zombi, zombicubeta, calavera, angel, ddode]
     batalla = loadSound("batalla.mp3")
     menu = loadSound("menu.mp3")
@@ -72,6 +76,7 @@ function setup() {
     enemigos = createGroup()
     jefes = createGroup()
     repisas = createGroup()
+    repisasdisco = createGroup()
     for (let numrepisa = 0; numrepisa < 16; numrepisa++) {
         repisa = createSprite(90 * numrepisa, 5, 50, 20)
         repisa.addImage(repisaimg)
@@ -90,7 +95,7 @@ function draw() {
     fill("red")
     rect(25, 25, gato.vida * 22, 25)
    
-    if (gato.isTouching(bordes[1]) && enemigos.length == 0) {
+    if (gato.isTouching(bordes[1]) && enemigos.length == 0 && jefes.length == 0) {
         fondo.velocityY = 12
         fondo1.velocityY = 12
         nivel++
@@ -114,7 +119,7 @@ function draw() {
         });
 
     }
-    if (enemigos.length == 0) {
+    if (enemigos.length == 0 && jefes.length == 0) {
         flecha.visible = true
     }
     else {
@@ -202,6 +207,7 @@ function draw() {
         gato.changeAnimation("gatoquieto", gatoquieto)
 
     }
+
     if (frameCount % 55 == 0) {
 
         enemigos.forEach(malo => {
@@ -209,12 +215,18 @@ function draw() {
 
         })
         jefes.forEach(jefe => {
-           
+           if(jefe.tipo!="zombidis"){
             perseguir(gato, jefe)
             ataqueespecial(jefe)
+
+           }
+            
         })
     }
     jefes.forEach(jefe=>{
+        if(jefe.tipo=="zombidis"){
+            jefe.bounceOff(repisasdisco,discmirror)
+        }
         if(jefe.guardarfr+33==frameCount){
             switch(jefe.tipo){
                 case "oso":
@@ -353,7 +365,7 @@ function crearjefe() {
             jefes.add(futzom)
             break
         case 30:
-            zombidis = createSprite(ancho - 10, alto - 120)
+            zombidis = createSprite(ancho/2, alto*0.2)
             zombidis.addAnimation("caminar", discoZ)
             zombidis.scale = 1.3
             zombidis.vida = 350
@@ -361,6 +373,25 @@ function crearjefe() {
             discomusica.setVolume(0.7)
             zombidis.invensible=false
             zombidis.tipo="zombidis"
+            crearsuplentes()
+            repisa = createSprite((ancho*0.43), alto/3)
+            repisa.depth=1
+            repisa.scale=2
+            repisa.addImage(pistdisc)
+            repisa=createSprite(ancho*0.3,alto/3-25,10,50)
+            repisa.addImage(luzdis)
+            repisa.scale=0.2
+            repisa.mirrorX(-1)
+            repisasdisco.add(repisa)
+            repisa=createSprite(ancho*0.3+90*4,alto/3-25,10,50)
+            repisa.addImage(luzdis)
+            repisa.scale=0.2
+            repisasdisco.add(repisa)
+            boladisco=createSprite(ancho/2-30,alto*0.1)
+            boladisco.depth=1
+            boladisco.addAnimation("disco",boladis)
+            boladisco.scale=0.3
+            zombidis.velocityX=5
             jefes.add(zombidis)
             break
         case 40:
@@ -460,5 +491,24 @@ function ataqueespecial(jefe){
         ataquesorpresa=int(random(2,4))
         console.log("ataque hecho")
         ataquetimer=0
+    }
+}
+function crearsuplentes() {
+    horda = random(4, 8)
+    for (var i = 0; i < horda; i++) {
+        malo = createSprite(random(ancho * 0.2, ancho-10), alto - 95, 50, 50)
+        malo.invensible=false
+        malo.addAnimation("caminar", suplente)
+        malo.scale = 1.5
+        malo.vida = 12
+        enemigos.add(malo)
+    }
+}
+function discmirror(zombidis,repisa){
+    if(zombidis.velocityX>0){
+        zombidis.mirrorX(1)
+    }
+    else{
+        zombidis.mirrorX(-1)
     }
 }
