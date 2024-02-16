@@ -77,6 +77,7 @@ function setup() {
     jefes = createGroup()
     repisas = createGroup()
     repisasdisco = createGroup()
+    disco = createGroup()
     for (let numrepisa = 0; numrepisa < 16; numrepisa++) {
         repisa = createSprite(90 * numrepisa, 5, 50, 20)
         repisa.addImage(repisaimg)
@@ -120,7 +121,10 @@ function draw() {
 
     }
     if (enemigos.length == 0 && jefes.length == 0) {
-        flecha.visible = true
+            flecha.visible = true
+    }
+    else if (enemigos.length == 0 && jefes.length != 0 && jefes[0].tipo=="zombidis"){
+        jefes[0].y=alto-95
     }
     else {
         flecha.visible = false
@@ -215,10 +219,12 @@ function draw() {
 
         })
         jefes.forEach(jefe => {
-           if(jefe.tipo!="zombidis"){
+           if(jefe.tipo!="zombidis"||jefe.y>alto*0.2){
             perseguir(gato, jefe)
             ataqueespecial(jefe)
 
+           } else{
+            jefe.bounceOff(repisasdisco,discmirror)
            }
             
         })
@@ -238,6 +244,10 @@ function draw() {
                     console.log("no es invencible")
                     perseguir(gato,jefe)
                     break
+                case "zombidis":
+                    jefe.x=ancho/2
+                    jefe.y=alto*0.2
+                    crearsuplentes()
             }
             
         }
@@ -262,6 +272,9 @@ function quitarvida(gato, enemigo) {
         enemigo.vida -= 1.5
         if (enemigo.vida <= 0) {
             enemigo.destroy()
+            if(enemigo.tipo=="zombidis"){
+                disco.destroyEach()
+            }
         }
 
     }
@@ -368,7 +381,7 @@ function crearjefe() {
             zombidis = createSprite(ancho/2, alto*0.2)
             zombidis.addAnimation("caminar", discoZ)
             zombidis.scale = 1.3
-            zombidis.vida = 350
+            zombidis.vida = 300
             batalla.stop()
             discomusica.setVolume(0.7)
             zombidis.invensible=false
@@ -378,27 +391,31 @@ function crearjefe() {
             repisa.depth=1
             repisa.scale=2
             repisa.addImage(pistdisc)
+            disco.add(repisa)
             repisa=createSprite(ancho*0.3,alto/3-25,10,50)
             repisa.addImage(luzdis)
             repisa.scale=0.2
             repisa.mirrorX(-1)
             repisasdisco.add(repisa)
+            disco.add(repisa)
             repisa=createSprite(ancho*0.3+90*4,alto/3-25,10,50)
             repisa.addImage(luzdis)
             repisa.scale=0.2
             repisasdisco.add(repisa)
+            disco.add(repisa)
             boladisco=createSprite(ancho/2-30,alto*0.1)
             boladisco.depth=1
             boladisco.addAnimation("disco",boladis)
             boladisco.scale=0.3
             zombidis.velocityX=5
+            disco.add(boladisco)
             jefes.add(zombidis)
             break
         case 40:
             zombistein = createSprite(ancho + 2350, alto - 250)
             zombistein.addAnimation("caminar", zombi40)
             zombistein.scale = 2.5
-            zombistein.vida = 800
+            zombistein.vida = 600
             batalla.stop()
             zombistein.invensible=false
             zombistein.tipo="zombistein"
