@@ -8,8 +8,9 @@
     <script src="p5.play.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>cat adventure</title>
-<link rel="shortcut icon" href="recursos\logo.png" type="image/x-icon">
+<link rel="shortcut icon" href="./recursos/logo.png" type="image/x-icon">
 <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-firestore.js"></script>
@@ -19,18 +20,26 @@
 <body onload="marcador()">
     <div id="instrucciones">
         <h2>controles</h2>
-        <img src="recursos\teclas-1.png.png" alt="">
-        <img src="recursos\pixelc3.png" class="izquierda">
+        <img src="./recursos/teclas-1.png.png" alt="">
+        <img src="./recursos/pixelc3.png" class="izquierda">
+    </div>
+    <div id="celular">
+        <div style="float: left; margin-left: 100px;">
+            <img src="./recursos/izq.png" onclick="izquierda()" id="izq">
+            <img src="./recursos/der.png" onclick="derecha()" id="der">
+            <img src="./recursos/arri.png" onclick="arriba()" id="arri">
+        </div>
+        <img src="./recursos/atack.png" onclick="atack()" id="atack" style="float: right;">
     </div>
     <div id="instrucciones2">
         <h2>controles</h2>
-        <img src="recursos\teclas-3.png.png" alt="">
-        <img src="recursos\pixelca2.png" class="acomodo">
+        <img src="./recursos/teclas-3.png.png" alt="">
+        <img src="./recursos/pixelca2.png" class="acomodo">
     </div>
     <div id="stats">
         <h2>records :</h2>
     </div>
-    <img src="recursos\cat_adventure_logo.png" id="titulo">
+    <img src="./recursos/cat_adventure_logo.png" id="titulo">
     <div id="derrota">
         <h1>perdiste</h1>
         <div>

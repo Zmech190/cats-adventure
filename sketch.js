@@ -20,26 +20,26 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 function preload() {
-    gatoquieto = loadAnimation("recursos/c3.png")
-    gatocaminar = loadAnimation("recursos/c3.png", "recursos/c2.png", "recursos/c3.png", "recursos/c4.png")
-    inicio = loadImage("recursos/inicio1.png")
-    piso1 = loadImage("recursos/piso 1.jpg")
-    piso2 = loadImage("recursos/piso 2.jpg")
+    gatoquieto = loadAnimation("./recursos/c3.png")
+    gatocaminar = loadAnimation("./recursos/c3.png", "./recursos/c2.png", "./recursos/c3.png", "./recursos/c4.png")
+    inicio = loadImage("./recursos/inicio1.png")
+    piso1 = loadImage("./recursos/piso 1.jpg")
+    piso2 = loadImage("./recursos/piso 2.jpg")
     ecenarios = [piso1, piso2]
-    zombi = loadAnimation("recursos/z2.png", "recursos/z3.png", "recursos/z4.png", "recursos/z5.png", "recursos/z6.png", "recursos/z7.png")
-    zombicubeta = loadAnimation("recursos/zo1.png", "recursos/zo2.png", "recursos/zo3.png", "recursos/zo4.png", "recursos/zo5.png", "recursos/zo6.png")
-    calavera = loadAnimation("recursos/ghost-jumping.png", "recursos/ghost-standing.png")
-    angel = loadAnimation("recursos/ga1.png", "recursos/ga2.png", "recursos/ga3.png")
-    ddode = loadAnimation("recursos/dd1.png", "recursos/dd2.png", "recursos/dd3.png")
-    osocamina = loadAnimation("recursos/oso_0.png", "recursos/oso_1.png", "recursos/oso_2.png", "recursos/oso_3.png", "recursos/oso_4.png", "recursos/oso_5.png")
-    osoataca = loadAnimation("recursos/oso_a1.png", "recursos/oso_a2.png", "recursos/oso_a3.png")
-    futbolz = loadAnimation("recursos/zf_0.png", "recursos/zf_1.png", "recursos/zf_2.png", "recursos/zf_3.png", "recursos/zf_4.png", "recursos/zf_5.png", "recursos/zf_6.png", "recursos/zf_7.png")
-    discoZ = loadAnimation("recursos/zd_0.png", "recursos/zd_1.png", "recursos/zd_2.png", "recursos/zd_3.png", "recursos/zd_4.png", "recursos/zd_5.png")
-    zombi40 = loadAnimation("recursos/zombistein_0.png","recursos/zombistein_1.png","recursos/zombistein_2.png","recursos/zombistein_3.png","recursos/zombistein_4.png","recursos/zombistein_5.png","recursos/zombistein_6.png","recursos/zombistein_7.png")
-    suplente = loadAnimation("recursos/suplente_0.png","recursos/suplente_1.png","recursos/suplente_2.png","recursos/suplente_3.png")
-    pistdisc = loadImage("recursos/pista disco px.png")
-    luzdis = loadImage("recursos/luz pixeleada c.png")
-    boladis = loadAnimation("recursos/boladis_0.png","recursos/boladis_1.png")
+    zombi = loadAnimation("./recursos/z2.png", "./recursos/z3.png", "./recursos/z4.png", "./recursos/z5.png", "./recursos/z6.png", "./recursos/z7.png")
+    zombicubeta = loadAnimation("./recursos/zo1.png", "./recursos/zo2.png", "./recursos/zo3.png", "./recursos/zo4.png", "./recursos/zo5.png", "./recursos/zo6.png")
+    calavera = loadAnimation("./recursos/ghost-jumping.png", "./recursos/ghost-standing.png")
+    angel = loadAnimation("./recursos/ga1.png", "./recursos/ga2.png", "./recursos/ga3.png")
+    ddode = loadAnimation("./recursos/dd1.png", "./recursos/dd2.png", "./recursos/dd3.png")
+    osocamina = loadAnimation("./recursos/oso_0.png", "./recursos/oso_1.png", "./recursos/oso_2.png", "./recursos/oso_3.png", "./recursos/oso_4.png", "./recursos/oso_5.png")
+    osoataca = loadAnimation("./recursos/oso_a1.png", "./recursos/oso_a2.png", "./recursos/oso_a3.png")
+    futbolz = loadAnimation("./recursos/zf_0.png", "./recursos/zf_1.png", "./recursos/zf_2.png", "./recursos/zf_3.png", "./recursos/zf_4.png", "./recursos/zf_5.png", "./recursos/zf_6.png", "./recursos/zf_7.png")
+    discoZ = loadAnimation("./recursos/zd_0.png", "./recursos/zd_1.png", "./recursos/zd_2.png", "./recursos/zd_3.png", "./recursos/zd_4.png", "./recursos/zd_5.png")
+    zombi40 = loadAnimation("./recursos/zombistein_0.png","./recursos/zombistein_1.png","./recursos/zombistein_2.png","./recursos/zombistein_3.png","./recursos/zombistein_4.png","./recursos/zombistein_5.png","./recursos/zombistein_6.png","./recursos/zombistein_7.png")
+    suplente = loadAnimation("./recursos/suplente_0.png","./recursos/suplente_1.png","./recursos/suplente_2.png","./recursos/suplente_3.png")
+    pistdisc = loadImage("./recursos/pista disco px.png")
+    luzdis = loadImage("./recursos/luz pixeleada c.png")
+    boladis = loadAnimation("./recursos/boladis_0.png","./recursos/boladis_1.png")
     malosanimaciones = [zombi, zombicubeta, calavera, angel, ddode]
     batalla = loadSound("batalla.mp3")
     menu = loadSound("menu.mp3")
@@ -47,10 +47,10 @@ function preload() {
     futmusica = loadSound("futzom1.mp3")
     discomusica = loadSound("dancezombie1.mp3")
     zombistainsong = loadSound("zombie40.mp3")
-    gatoataca = loadAnimation("recursos/ca1.png", "recursos/ca2.png", "recursos/ca3.png", "recursos/ca4.png")
+    gatoataca = loadAnimation("./recursos/ca1.png", "./recursos/ca2.png", "./recursos/ca3.png", "./recursos/ca4.png")
     defeat = loadSound("defeat.mp3")
-    repisaimg = loadImage("recursos/climber.png")
-    flechaimg = loadImage("recursos/flecha.png")
+    repisaimg = loadImage("./recursos/climber.png")
+    flechaimg = loadImage("./recursos/flecha.png")
 }
 
 function setup() {
@@ -86,6 +86,12 @@ function setup() {
     flecha = createSprite(ancho - 250, alto / 2)
     flecha.addImage(flechaimg)
     flecha.scale = 0.45
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){
+        document.getElementById("celular").style.display="block"
+    }
+    else {
+        document.getElementById("celular").style.display="none"
+    }
 }
 
 function draw() {
@@ -528,4 +534,40 @@ function discmirror(zombidis,repisa){
     else{
         zombidis.mirrorX(-1)
     }
+}
+function derecha() {
+    if (gato.getAnimationLabel() != "gatoataca") {
+        gato.x += 6
+        gato.changeAnimation("gatocaminar", gatocaminar)
+        gato.mirrorX(-1)
+    }
+}
+function izquierda(){
+if (gato.getAnimationLabel() != "gatoataca") {
+    gato.x -= 6
+    gato.changeAnimation("gatocaminar", gatocaminar)
+    gato.mirrorX(1)
+
+}
+}
+function arriba() {
+   if (!saltando) {
+        gato.velocityY = -17
+        saltando = true
+        gato.changeAnimation("gatocaminar", gatocaminar)
+        gato.mirrorX(1)
+    } 
+}
+
+function atack() {
+if (gato.getAnimationLabel() != "gatoataca") {
+    gato.changeAnimation("gatoataca", gatoataca)
+    gato.animation.looping = false
+    gato.animation.changeFrame(0)
+
+}
+}
+if (keyWentUp("UP_ARROW") || keyWentUp("DOWN_ARROW") || keyWentUp("LEFT_ARROW") || keyWentUp("RIGHT_ARROW")) {
+    gato.changeAnimation("gatoquieto", gatoquieto)
+
 }
