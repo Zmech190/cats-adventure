@@ -15,6 +15,7 @@
 <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/live/3.1/firebase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap" rel="stylesheet">
 </head>
 
 <body onload="marcador()">
@@ -43,11 +44,14 @@
     <div id="derrota">
         <h1>perdiste</h1>
         <div>
-            <input type="text" id="nickname" placeholder="escribe tu nickname">
-            <button onclick="guardar()">guardar record</button>
-            <br>
-            <br>
             <button onclick="reiniciar()">volver a empezar</button>
+        </div>
+    </div>
+    <div id="inicio">
+        <h1>Inicio de sesion</h1>
+        <div>
+            <input type="text" id="nickname" placeholder="escribe tu nickname">
+            <button onclick="guardarnombre()">iniciar</button>
         </div>
     </div>
     <script src="sketch.js"></script>

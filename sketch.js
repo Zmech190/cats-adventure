@@ -25,6 +25,7 @@ function preload() {
     inicio = loadImage("./recursos/inicio1.png")
     piso1 = loadImage("./recursos/piso 1.jpg")
     piso2 = loadImage("./recursos/piso 2.jpg")
+    tiendita = loadImage("./recursos/tienda.jpg")
     ecenarios = [piso1, piso2]
     zombi = loadAnimation("./recursos/z2.png", "./recursos/z3.png", "./recursos/z4.png", "./recursos/z5.png", "./recursos/z6.png", "./recursos/z7.png")
     zombicubeta = loadAnimation("./recursos/zo1.png", "./recursos/zo2.png", "./recursos/zo3.png", "./recursos/zo4.png", "./recursos/zo5.png", "./recursos/zo6.png")
@@ -41,14 +42,15 @@ function preload() {
     luzdis = loadImage("./recursos/luz pixeleada c.png")
     boladis = loadAnimation("./recursos/boladis_0.png","./recursos/boladis_1.png")
     malosanimaciones = [zombi, zombicubeta, calavera, angel, ddode]
-    batalla = loadSound("batalla.mp3")
-    menu = loadSound("menu.mp3")
-    osomusica = loadSound("osomusica1.mp3")
-    futmusica = loadSound("futzom1.mp3")
-    discomusica = loadSound("dancezombie1.mp3")
-    zombistainsong = loadSound("zombie40.mp3")
+    batalla = loadSound("./batalla.mp3")
+    menu = loadSound("./menu.mp3")
+    osomusica = loadSound("./osomusica1.mp3")
+    futmusica = loadSound("./futzom1.mp3")
+    tiendamusica = loadSound("./tienda.mp3")
+    discomusica = loadSound("./dancezombie1.mp3")
+    zombistainsong = loadSound("./zombie40.mp3")
     gatoataca = loadAnimation("./recursos/ca1.png", "./recursos/ca2.png", "./recursos/ca3.png", "./recursos/ca4.png")
-    defeat = loadSound("defeat.mp3")
+    defeat = loadSound("./defeat.mp3")
     repisaimg = loadImage("./recursos/climber.png")
     flechaimg = loadImage("./recursos/flecha.png")
 }
@@ -56,6 +58,9 @@ function preload() {
 function setup() {
     createCanvas(ancho, alto);
     inicio.resize(ancho, alto)
+    tienda = createSprite (ancho / 2, alto * 1.5)
+    tiendita.resize(ancho, alto)
+    tienda.addImage(tiendita)
     fondo = createSprite(ancho / 2, alto / 2)
     fondo.addImage(inicio)
     piso1.resize(ancho, alto)
@@ -101,13 +106,52 @@ function draw() {
     rect(25, 25, 286, 25)
     fill("red")
     rect(25, 25, gato.vida * 22, 25)
-   
+    if (gato.isTouching(bordes[0]) && nivel==0 ) {
+        fondo.velocityY = -12
+        tienda.velocityY = -12
+        nivel--
+        
+        menu.stop()
+        osomusica.stop()
+        futmusica.stop()
+        discomusica.stop()
+        zombistainsong.stop()
+        batalla.stop()
+        tiendamusica.play()
+        tiendamusica.setVolume(0.4)
+        document.getElementById("instrucciones").style.display = "none"
+        document.getElementById("instrucciones2").style.display = "none"
+        document.getElementById("titulo").style.display = "none"
+        document.getElementById("stats").style.display = "none"
+        
+        gato.visible = false
+        gato.x = 20
+        flecha.visible = true
+        repisas.forEach(element => {
+            element.velocityY = -12
+        });
+
+    }
     if (gato.isTouching(bordes[1]) && enemigos.length == 0 && jefes.length == 0) {
-        fondo.velocityY = 12
-        fondo1.velocityY = 12
-        nivel++
+        if(nivel == -1){
+            fondo.velocityY = 12
+            tienda.velocityY = 12
+            document.getElementById("instrucciones").style.display = "block"
+            document.getElementById("instrucciones2").style.display = "block"
+            document.getElementById("titulo").style.display = "block"
+            document.getElementById("stats").style.display = "block"
+            tiendamusica.stop()
+            menu.play()
+            console.log("deberia verse el menú")
+            nivel = 0
+        }else{
+            fondo.velocityY = 12
+            fondo1.velocityY = 12
+            nivel++
+        }
         if (nivel % 10 != 0) {
             menu.stop()
+            tiendamusica.stop()
             osomusica.stop()
             futmusica.stop()
             discomusica.stop()
@@ -179,6 +223,24 @@ function draw() {
             element.y = 5
         });
         fondo1.addImage(random(ecenarios))
+    }
+    if (nivel == -1 && fondo.y<=-alto/2){
+        fondo.velocityY=0
+        tienda.velocityY=0
+        gato.visible = true
+        repisas.forEach(element => {
+            element.velocityY = 0
+            element.y = 5
+        });
+    }
+    if (nivel == 0 && tienda.y >= alto * 1.5){
+        fondo.velocityY=0
+        tienda.velocityY=0
+        gato.visible = true
+        repisas.forEach(element => {
+            element.velocityY = 0
+            element.y = 5
+        });
     }
     gato.collide(bordes)
     gato.collide(suelo, tocarsuelo)
@@ -298,7 +360,7 @@ function quitarvida(gato, enemigo) {
         discomusica.stop()
         defeat.play()
         defeat.setVolume(0.4)
-
+        guardarscore()
         document.getElementById("derrota").style.display = "block"
     }
 }
@@ -349,11 +411,15 @@ function crearmalos() {
 function listaenemigos(gato, bordes) {
 
 }
-function guardar() {
+function guardarnombre() {
     nickname = document.getElementById("nickname").value
+    localStorage.setItem("nickname", nickname);
+    document.getElementById("inicio").style.display = "none"
+}
+function guardarscore() {
+    nickname = localStorage.getItem("nickname");
     firebase.database().ref().child("nivel").update({ [nickname]: nivel })
-    document.getElementById("derrota").style.display = "none"
-    location.reload()
+    document.getElementById("inicio").style.display = "none"
 }
 function crearjefe() {
     switch (nivel) {
@@ -451,6 +517,11 @@ function musica() {
 
     
     switch (nivel) {
+        case -1:
+            if (!tiendamusica.isPlaying()) {
+                tiendamusica.play()
+            }
+            break;
         case 0:
             if (!menu.isPlaying()) {
                 menu.play()
@@ -485,6 +556,8 @@ function musica() {
     }
     }
     else{
+        menu.stop()
+        tiendamusica.stop()
         batalla.stop()
         osomusica.stop()
         futmusica.stop()
