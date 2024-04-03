@@ -6,6 +6,8 @@ var ataque = 0
 var estado = "play"
 var saltando = false
 var nivel = 0
+var monedero = 0
+var accesorios = []
 
 var firebaseConfig = {
     apiKey: "AIzaSyCgqxH1wAC4__RGw6t3_yJxwGKMNBGfFZs",
@@ -32,6 +34,8 @@ function preload() {
     calavera = loadAnimation("./recursos/ghost-jumping.png", "./recursos/ghost-standing.png")
     angel = loadAnimation("./recursos/ga1.png", "./recursos/ga2.png", "./recursos/ga3.png")
     ddode = loadAnimation("./recursos/dd1.png", "./recursos/dd2.png", "./recursos/dd3.png")
+    Lucar = loadImage("./recursos/vendedor.png")
+    minilucar = loadImage("./recursos/vendedor2.png")
     osocamina = loadAnimation("./recursos/oso_0.png", "./recursos/oso_1.png", "./recursos/oso_2.png", "./recursos/oso_3.png", "./recursos/oso_4.png", "./recursos/oso_5.png")
     osoataca = loadAnimation("./recursos/oso_a1.png", "./recursos/oso_a2.png", "./recursos/oso_a3.png")
     futbolz = loadAnimation("./recursos/zf_0.png", "./recursos/zf_1.png", "./recursos/zf_2.png", "./recursos/zf_3.png", "./recursos/zf_4.png", "./recursos/zf_5.png", "./recursos/zf_6.png", "./recursos/zf_7.png")
@@ -41,6 +45,8 @@ function preload() {
     pistdisc = loadImage("./recursos/pista disco px.png")
     luzdis = loadImage("./recursos/luz pixeleada c.png")
     boladis = loadAnimation("./recursos/boladis_0.png","./recursos/boladis_1.png")
+    bolsa = loadImage("./recursos/bolsa.png")
+    spincoin = loadAnimation("./recursos/spincoin0.png","./recursos/spincoin1.png","./recursos/spincoin2.png","./recursos/spincoin3.png")
     malosanimaciones = [zombi, zombicubeta, calavera, angel, ddode]
     batalla = loadSound("./batalla.mp3")
     menu = loadSound("./menu.mp3")
@@ -61,29 +67,38 @@ function setup() {
     tienda = createSprite (ancho / 2, alto * 1.5)
     tiendita.resize(ancho, alto)
     tienda.addImage(tiendita)
+    tienda.abierto = false
     fondo = createSprite(ancho / 2, alto / 2)
     fondo.addImage(inicio)
     piso1.resize(ancho, alto)
     piso2.resize(ancho, alto)
     fondo1 = createSprite(ancho / 2, -alto / 2)
     fondo1.addImage(piso1)
+    vendedor1 = createSprite(ancho * 0.8, alto*0.7)
+    vendedor1.addImage("vendedor1",Lucar)
+    vendedor1.addImage("vendedor2",minilucar)
+    vendedor1.visible = false
     gato = createSprite(ancho / 2, alto - 95)
     gato.addAnimation("gatoquieto", gatoquieto)
     gato.addAnimation("gatocaminar", gatocaminar)
     gato.addAnimation("gatoataca", gatoataca)
     gato.scale = 1.34
     gato.vida = 13
+    cartera=createSprite(ancho*0.8,50)
+    cartera.addImage(bolsa)
+    cartera.scale = 0.04
     menu.play()
     menu.setVolume(0.4)
-    suelo = createSprite(ancho / 2, alto - 35, ancho, 10)
+    suelo = createSprite(ancho / 2, alto * 0.9 , ancho, 10)
     suelo.visible = false
     bordes = createEdgeSprites()
     enemigos = createGroup()
     jefes = createGroup()
     repisas = createGroup()
     repisasdisco = createGroup()
+    ahorro = createGroup()
     disco = createGroup()
-    for (let numrepisa = 0; numrepisa < 16; numrepisa++) {
+    for (let numrepisa = 0; numrepisa < (width / 90); numrepisa++) {
         repisa = createSprite(90 * numrepisa, 5, 50, 20)
         repisa.addImage(repisaimg)
         repisas.add(repisa)
@@ -106,6 +121,10 @@ function draw() {
     rect(25, 25, 286, 25)
     fill("red")
     rect(25, 25, gato.vida * 22, 25)
+    fill("866c1d")
+    textSize(34)
+    textStyle(BOLD);
+    text(monedero,ancho*0.85,45)
     if (gato.isTouching(bordes[0]) && nivel==0 ) {
         fondo.velocityY = -12
         tienda.velocityY = -12
@@ -123,11 +142,11 @@ function draw() {
         document.getElementById("instrucciones2").style.display = "none"
         document.getElementById("titulo").style.display = "none"
         document.getElementById("stats").style.display = "none"
-        
         gato.visible = false
         gato.x = 20
         flecha.visible = true
         repisas.forEach(element => {
+            element.y = height;
             element.velocityY = -12
         });
 
@@ -136,11 +155,7 @@ function draw() {
         if(nivel == -1){
             fondo.velocityY = 12
             tienda.velocityY = 12
-            document.getElementById("instrucciones").style.display = "block"
-            document.getElementById("instrucciones2").style.display = "block"
-            document.getElementById("titulo").style.display = "block"
-            document.getElementById("stats").style.display = "block"
-            tiendamusica.stop()
+            vendedor1.visible = false;
             menu.play()
             console.log("deberia verse el menú")
             nivel = 0
@@ -224,7 +239,22 @@ function draw() {
         });
         fondo1.addImage(random(ecenarios))
     }
-    if (nivel == -1 && fondo.y<=-alto/2){
+    if (nivel == -1 && fondo.y<=-alto/2 && tienda.abierto == false){
+        tienda.abierto=true
+        document.getElementById("productos").style.display = "block"
+        if(round(random(0,1))===1){
+            vendedor1.changeImage("vendedor1")
+            vendedor1.scale = 0.55
+            vendedor1.y = alto*0.7
+            vendedor1.mirrorX(1)
+        }
+        else {
+            vendedor1.changeImage("vendedor2")
+            vendedor1.scale = 0.20
+            vendedor1.y = alto*0.75
+            vendedor1.mirrorX(-1)
+        }
+        vendedor1.visible = true;
         fondo.velocityY=0
         tienda.velocityY=0
         gato.visible = true
@@ -234,9 +264,17 @@ function draw() {
         });
     }
     if (nivel == 0 && tienda.y >= alto * 1.5){
+        tienda.abierto = false
+        document.getElementById("productos").style.display = "none"
+        vendedor1.visible = false;
         fondo.velocityY=0
         tienda.velocityY=0
         gato.visible = true
+        document.getElementById("instrucciones").style.display = "block"
+        document.getElementById("instrucciones2").style.display = "block"
+        document.getElementById("titulo").style.display = "block"
+        document.getElementById("stats").style.display = "block"
+        tiendamusica.stop()
         repisas.forEach(element => {
             element.velocityY = 0
             element.y = 5
@@ -322,6 +360,7 @@ function draw() {
     })
     gato.overlap(enemigos, quitarvida)
     gato.overlap(jefes, quitarvida)
+    gato.overlap(ahorro,recolectar)
     musica()
 
 }
@@ -338,7 +377,18 @@ function perseguir(p1, p2) {
 function quitarvida(gato, enemigo) {
     if (gato.getAnimationLabel() == "gatoataca"&&enemigo.invensible==false) {
         enemigo.vida -= 1.5
+        
         if (enemigo.vida <= 0) {
+            loot=round(random(0,1))
+            if (loot===1){
+                banco = (enemigo.tipo === undefined) ? round(random(1,6)) : banco = round(random(25,30));
+               for (let index = 0; index < banco; index++) {
+                catcoin=createSprite(enemigo.x+random(-10,10),enemigo.y+random(20,45))
+                catcoin.addAnimation("spin", spincoin)
+                catcoin.scale=0.09
+                ahorro.add(catcoin)
+               } 
+            }
             enemigo.destroy()
             if(enemigo.tipo=="zombidis"){
                 disco.destroyEach()
@@ -370,7 +420,7 @@ function tocarsuelo(gato, suelo) {
 function crearmalos() {
     horda = random(3, 11)
     for (var i = 0; i < horda; i++) {
-        malo = createSprite(random(ancho * 0.75, ancho * 2.5), alto - 95, 50, 50)
+        malo = createSprite(random(ancho * 0.75, ancho * 2.5), alto * 0.8, 50, 50)
         malo.invensible=false
 
         switch (random(malosanimaciones)) {
@@ -415,16 +465,31 @@ function guardarnombre() {
     nickname = document.getElementById("nickname").value
     localStorage.setItem("nickname", nickname);
     document.getElementById("inicio").style.display = "none"
+    firebase.database().ref("jugadores/"+nickname).once("value",(datos)=>{
+        if (datos.exists()){
+            monedero = datos.val()["catcoin"]
+            accesorios = datos.val()["accesorios"].key
+            console.log(accesorios);
+        }else{
+            firebase.database().ref("jugadores/"+nickname).set({
+                catcoin: 0
+            })
+        }
+    })
 }
 function guardarscore() {
     nickname = localStorage.getItem("nickname");
     firebase.database().ref().child("nivel").update({ [nickname]: nivel })
     document.getElementById("inicio").style.display = "none"
+    nickname = localStorage.getItem("nickname");
+    firebase.database().ref("jugadores/"+nickname).update({
+        catcoin: monedero
+    })
 }
 function crearjefe() {
     switch (nivel) {
         case 10:
-            oso = createSprite(ancho - 10, alto - 210)
+            oso = createSprite(ancho - 10, alto * 0.85)
             oso.addAnimation("caminar", osocamina)
             oso.addAnimation("ataca", osoataca)
             oso.scale = 2.3
@@ -437,7 +502,7 @@ function crearjefe() {
             osomusica.setVolume(1.2)
             break
         case 20:
-            futzom = createSprite(ancho - 10, alto - 110)
+            futzom = createSprite(ancho - 10, alto * 0.8)
             futzom.addAnimation("caminar", futbolz)
             futzom.scale = 1.3
             futzom.vida = 200
@@ -450,7 +515,7 @@ function crearjefe() {
             jefes.add(futzom)
             break
         case 30:
-            zombidis = createSprite(ancho/2, alto*0.2)
+            zombidis = createSprite(ancho/2, alto * 0.8)
             zombidis.addAnimation("caminar", discoZ)
             zombidis.scale = 1.3
             zombidis.vida = 300
@@ -459,24 +524,24 @@ function crearjefe() {
             zombidis.invensible=false
             zombidis.tipo="zombidis"
             crearsuplentes()
-            repisa = createSprite((ancho*0.43), alto/3)
-            repisa.depth=1
-            repisa.scale=2
-            repisa.addImage(pistdisc)
-            disco.add(repisa)
-            repisa=createSprite(ancho*0.3,alto/3-25,10,50)
-            repisa.addImage(luzdis)
-            repisa.scale=0.2
-            repisa.mirrorX(-1)
-            repisasdisco.add(repisa)
-            disco.add(repisa)
-            repisa=createSprite(ancho*0.3+90*4,alto/3-25,10,50)
-            repisa.addImage(luzdis)
-            repisa.scale=0.2
-            repisasdisco.add(repisa)
-            disco.add(repisa)
+            repisa_nivel30 = createSprite((ancho*0.43), alto*0.35)
+            repisa_nivel30.depth=10
+            repisa_nivel30.scale=2
+            repisa_nivel30.addImage(pistdisc)
+            disco.add(repisa_nivel30)
+            repisa_nivel30=createSprite(ancho*0.3,alto*0.3,10,50)
+            repisa_nivel30.addImage(luzdis)
+            repisa_nivel30.scale=0.2
+            repisa_nivel30.mirrorX(-1)
+            repisasdisco.add(repisa_nivel30)
+            disco.add(repisa_nivel30)
+            repisa_nivel30=createSprite(ancho*0.3+90*4,alto*0.3,10,50)
+            repisa_nivel30.addImage(luzdis)
+            repisa_nivel30.scale=0.2
+            repisasdisco.add(repisa_nivel30)
+            disco.add(repisa_nivel30)
             boladisco=createSprite(ancho/2-30,alto*0.1)
-            boladisco.depth=1
+            boladisco.depth=10
             boladisco.addAnimation("disco",boladis)
             boladisco.scale=0.3
             zombidis.velocityX=5
@@ -633,14 +698,83 @@ function arriba() {
 }
 
 function atack() {
-if (gato.getAnimationLabel() != "gatoataca") {
-    gato.changeAnimation("gatoataca", gatoataca)
-    gato.animation.looping = false
-    gato.animation.changeFrame(0)
+    if (gato.getAnimationLabel() != "gatoataca") {
+        gato.changeAnimation("gatoataca", gatoataca)
+        gato.animation.looping = false
+        gato.animation.changeFrame(0)
 
+    }
 }
+class Item{
+    constructor(){
+        this.nombre = "";
+        this.imagen = "";
+        this.precio = 0;
+        this.mensaje = "";
+    }
 }
-if (keyWentUp("UP_ARROW") || keyWentUp("DOWN_ARROW") || keyWentUp("LEFT_ARROW") || keyWentUp("RIGHT_ARROW")) {
-    gato.changeAnimation("gatoquieto", gatoquieto)
-
+function comprar(eleccion){
+    item = new Item();
+    item.nombre = eleccion;
+    switch (item.nombre) {
+        case "sombrero":
+            item.precio = 60
+            item.imagen = "./recursos/Tophat.png";
+            item.mensaje =": este sombrero le pertenecio a un ex lider de una mafia .... no sabemos como llego aqui"
+            break;
+        case "gorra":
+            item.precio = 150
+            item.imagen = "./recursos/Tegorra(1).png"
+            item.mensaje = ": algo muy FATAL"
+        break
+        case "pistola":
+            item.precio = 100
+            item.imagen = "./recursos/Nat.png"
+            item.mensaje = ": es solo una simple pistola de airsoft, ¿porque te emocionas al verla?"
+            break
+        case "cono":
+            item.precio = 30
+            item.imagen = "./recursos/traffic-cone.png"
+            item.mensaje = ": este es un simple cono de trafico, supestamente le pertenecia a un asesino sereal pero ...... ¿porque te asustas amigo es solo un rumor?"
+    
+        default:
+            break;
+    }
+    Swal.fire({
+        title: "Estas seguro de esta compra?",
+        text: "Compraras:"+item.nombre+" por "+item.precio+" catcoins"+item.mensaje ,
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        imageUrl: item.imagen,
+        icon: "info",
+        confirmButtonText: "Si, comprar"
+      }).then((result) => {
+        if (result.isConfirmed) {
+            if (monedero >= item.precio) {
+                monedero = monedero - item.precio
+                firebase.database().ref("jugadores/"+nickname+"/accesorios").update({
+                    [item.nombre]:1
+                })
+                firebase.database().ref("jugadores/"+nickname).update({
+                    catcoin: monedero
+                })
+                Swal.fire({
+                    title: "Comprado",
+                    text: "Pruebatelo en el vestidor",
+                    icon: "success"
+                });
+            }else{
+                Swal.fire({
+                    title: "Sin catcoins",
+                    text: "No tienes suficientes catcoins",
+                    icon: "error"
+                });
+            }
+        }
+      });
+}
+function recolectar(gato,catcoin){
+    catcoin.destroy()
+    monedero++
 }

@@ -9,7 +9,7 @@ canvas {
 #instrucciones,#instrucciones2,#stats{
   width: 260px;
   height: 140px;
-  background-image: url(recursos/pizarra.png);
+  background-image: url(./recursos/pizarra.png);
   background-size: cover;
   position: absolute;
   top: 150px;
@@ -142,4 +142,27 @@ img{
 #inicio h1{
   font-size: 40px;
   font-family: "Irish Grover", system-ui;
+}
+#productos{
+  display: none;
+}
+#producto1{
+  top: 16%;
+  left:10%;
+  width: 6%;
+}
+#producto2{
+  top: 1%;
+  left:35%;
+  width: 6%;
+}
+#producto3{
+  top: 20%;
+  left:50%;
+  width: 6%;
+}
+#producto4{
+  top: 60%;
+  left:36%;
+  width: 4%;
 }
