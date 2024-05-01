@@ -7,6 +7,11 @@ var estado = "play"
 var saltando = false
 var nivel = 0
 var monedero = 0
+var listasombreros = ["./recursos/Tophat.png","./recursos/traffic-cone.png", "./recursos/Tegorra(1).png"]
+var listastatuajes = []
+var listaaccesorios = ["./recursos/Nat.png"]
+var listacara = []
+var listavestidor = []
 var accesorios = []
 
 var firebaseConfig = {
@@ -470,6 +475,7 @@ function guardarnombre() {
             monedero = datos.val()["catcoin"]
             accesorios = datos.val()["accesorios"].key
             console.log(accesorios);
+            llenarTienda()
         }else{
             firebase.database().ref("jugadores/"+nickname).set({
                 catcoin: 0
@@ -505,7 +511,7 @@ function crearjefe() {
             futzom = createSprite(ancho - 10, alto * 0.8)
             futzom.addAnimation("caminar", futbolz)
             futzom.scale = 1.3
-            futzom.vida = 200
+            futzom.vida = 185
             futzom.mirrorX(1)
             batalla.stop()
             osomusica.stop()
@@ -711,6 +717,30 @@ class Item{
         this.imagen = "";
         this.precio = 0;
         this.mensaje = "";
+        this.ajusteX = 0;
+        this.ajusteY = 0;
+    }
+}
+//{nombre:"",precio:0,imagen:"",mensaje:"",categoria:""},
+listadeitems =[
+    {nombre:"sombrero",precio:60,imagen:"./recursos/Tophat.png",mensaje:": este sombrero le pertenecio a un ex lider de una mafia .... no sabemos como llego aqui",categoria:"sombreros"},
+    {nombre:"gorra",precio:150,imagen:"./recursos/Tegorra(1).png",mensaje:": algo muy FATAL",categoria:"sombreros"},
+    {nombre:"pistola",precio:100,imagen:"./recursos/Nat.png",mensaje:": es solo una simple pistola de airsoft, ¿porque te emocionas al verla?",categoria:"accesorios"},
+    {nombre:"cono",precio:30,imagen:"./recursos/traffic-cone.png",mensaje:": este es un simple cono de trafico, supestamente le pertenecia a un asesino sereal pero ...... ¿porque te asustas amigo es solo un rumor?",categoria:"sombreros"},
+    {nombre:"fireinthehole",precio:333,imagen:"./recursos/fire.png",mensaje:"FIRE IN THE HOLE  🗣🗣🔥🔥🔥",categoria:"caras"},
+    {nombre:"calavera",precio:50,imagen:"./recursos/calaca.png",mensaje:": este es el simbolo de una organizacion militar ",categoria:"tatuajes"},
+    {nombre:"guitarra",precio:120,imagen:"./recursos/guitar.png",mensaje:": Se dice que el alma de su dueño original sigue atrapada dentro de esta… es bonita pero no sabes tocar guitarra….y ni siquiera tienes pulgares así que no la puedes usar",categoria:"accesorios"},
+]
+function llenarTienda() {
+    for (let index = 0; index < 7; index++) {
+        for (let index2 = 0; index2 < listadeitems.length; index2++) {
+            const itemdisponible = listadeitems[index2];
+            if(!accesorios.includes(itemdisponible.nombre)){
+                document.getElementById("producto" + index + 1).src = itemdisponible.imagen
+                document.getElementById("producto" + index + 1).onclick = "comprar('"+itemdisponible.nombre+ "')"
+            }
+        }
+        
     }
 }
 function comprar(eleccion){
@@ -736,7 +766,22 @@ function comprar(eleccion){
             item.precio = 30
             item.imagen = "./recursos/traffic-cone.png"
             item.mensaje = ": este es un simple cono de trafico, supestamente le pertenecia a un asesino sereal pero ...... ¿porque te asustas amigo es solo un rumor?"
-    
+            break
+        case "fireinthehole":
+            item.precio = 333
+            item.imagen = "./recursos/fire.png"
+            item. mensaje = ": FIRE IN THE HOLE  🗣🗣🔥🔥🔥"
+            break
+        case "calavera":
+            item.precio = 50
+            item.imagen = "./recursos/calaca.png"
+            item.mensaje = ": este es el simbolo de una organizacion militar"
+            break
+        case "guitarra":
+            item.precio = 120
+            item.imagen = "./recursos/guitar.png"
+            item.mensaje = ": Se dice que el alma de su dueño original sigue atrapada dentro de esta… es bonita pero no sabes tocar guitarra….y ni siquiera tienes pulgares así que no la puedes usar" 
+            break
         default:
             break;
     }
@@ -753,7 +798,7 @@ function comprar(eleccion){
         if (result.isConfirmed) {
             if (monedero >= item.precio) {
                 monedero = monedero - item.precio
-                firebase.database().ref("jugadores/"+nickname+"/accesorios").update({
+                firebase.database().ref("jugadores/"+nickname+"/accesorios/").update({
                     [item.nombre]:1
                 })
                 firebase.database().ref("jugadores/"+nickname).update({
@@ -778,3 +823,82 @@ function recolectar(gato,catcoin){
     catcoin.destroy()
     monedero++
 }
+function mostrarvestidor() {
+    document.getElementById("vestidor").style.display="block"
+}
+function ocultarvestidor() {
+    document.getElementById("vestidor").style.display="none"
+    document.getElementById("categorias").style.display="flex"
+    document.getElementById("objetos").style.display="none"
+    document.getElementById("vestidor").style.backgroundImage="url(./recursos/purplewall.jpg)"
+    vestidor = []
+}
+function elegircategoria(categoria) {
+    document.getElementById("categorias").style.display="none"
+    document.getElementById("objetos").style.display="flex"
+    document.getElementById("vestidor").style.backgroundImage="url(./recursos/purplewall.png)"
+
+    switch (categoria) {
+        case "sombreros":
+            vestidor = listasombreros;
+            break;
+        case "accesorios":
+            vestidor = listaaccesorios;
+            break;
+        case "tatuajes":
+            vestidor = listastatuajes;
+            break;
+        case "caras":
+            vestidor = listacara;
+            break;
+        default:
+            break;
+    }
+    cambiarImagenTarjeta("tarjeta1",vestidor[0]);
+    currimg = 0;
+    contador = 1;
+    currdeg = 0;
+}
+var carousel = document.getElementById("carousel");
+var currdeg = 0;
+var currimg = 0;
+var contador = 1;
+function cambiar(direccion){
+    if(direccion == "siguiente"){
+      currdeg-=60;
+      currimg++;
+      contador++;
+      if(currimg >= vestidor.length){
+        curimg = 0;
+      }
+      if(contador >= 7){
+        contador = 1;
+      }
+    }
+    if(direccion == "atras"){
+        currdeg+=60;
+        currimg++;
+        contador++;
+        if(currimg < 0){
+            currimg = vestidor.length - 1
+        }
+        if(contador < 1){
+            contador = 6
+        }
+    }
+    carousel.style.transform = "rotateY("+currdeg+"deg)";
+    cambiarImagenTarjeta("tarjeta" + contador,vestidor[currimg]);
+}
+function cambiarImagenTarjeta(id,imagen){
+    document.getElementById(id).style.backgroundImage = "url("+imagen+")"
+    document.getElementById(id).style.backgroundRepeat = "no-repeat";
+    document.getElementById(id).style.backgroundSize = "contain";
+}
+accesoriosGrupo = createGroup()
+function seleccionar(){
+    //item = createSprite(gato.x,gato.y)
+    /*firebase.database().ref("jugadores/"+nickname+"/accesorios/"+item.nombre).update({
+        usando:1
+    })*/
+}
+//index = listaaccesorios.findIndex(x => x.nombre ==="sombrero")

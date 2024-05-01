@@ -166,3 +166,129 @@ img{
   left:36%;
   width: 4%;
 }
+#producto5{
+  top: 30%;
+  left: 36%;
+  width: 5%;
+}
+#producto6{
+  top: 30%;
+  left: 10%;
+  width: 5%;
+}
+#producto7{
+  top: 30%;
+  left: 55%;
+  width: 5%;
+}
+#vestir{ /*botón de gancho*/
+  width: 50px;
+  border-radius: 10px;
+  top: 3%;
+  left: 62%;
+  border: solid black 3px;
+}
+#vestidor{
+  position: absolute;
+  display: none;
+  width: 90%;
+  height: 90vh;
+  border-radius: 10px;
+  top: 3%;
+  left: 3%;
+  border: solid black 3px;
+  background-size: cover;
+  box-shadow: 5px 5px 5px black;
+  background-image: url(./recursos/purplewall.jpg);
+  background-position: 50% 50%;
+}
+.cerrar{
+  width: 50px;
+  border-radius: 50px;
+  box-shadow: 5px 5px 5px black;
+}
+#vestidor #categorias button{
+  width: 150px;
+  height: 150px;
+  border-radius: 80px;
+  box-shadow: 5px 5px 5px black;
+  background:linear-gradient(135deg, rgb(209, 37, 209), #770a77, rgb(68, 13, 68),black) ;
+  font-size: 25px;
+  color: white;
+}
+.centrado{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 100%;
+}
+#objetos{
+  display: none;
+  height: 80%;
+  justify-content: center;
+  align-items: center;
+}
+.contenedor {
+  margin: 0 auto;
+  width: 250px;
+  height: 200px;
+  position: relative;
+  perspective: 1000px;
+}
+#carousel {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  transition: transform 1s;
+}
+.item {
+  display: block;
+  position: absolute;
+  background: black;
+  width: 250px;
+  height: 200px;
+  line-height: 200px;
+  font-size: 5em;
+  text-align: center;
+  color: white;
+  opacity: 0.95;
+  border-radius: 10px;
+  background-size: contain;
+}
+#tarjeta1 {
+  transform: rotateY(0deg) translateZ(250px);
+}
+#tarjeta2 {
+  transform: rotateY(60deg) translateZ(250px);
+}
+#tarjeta3 {
+  transform: rotateY(120deg) translateZ(250px);
+}
+#tarjeta4 {
+  transform: rotateY(180deg) translateZ(250px);
+}
+#tarjeta5 {
+  transform: rotateY(240deg) translateZ(250px);
+}
+#tarjeta6 {
+  transform: rotateY(300deg) translateZ(250px);
+}
+.siguiente{
+  right: 50px;
+}
+.atras{
+  left: 150px;
+}
+.siguiente, .atras {
+  position: absolute;
+  top: 150px;
+}
+.siguiente img, .atras img{
+  background-color: #ffffff;
+  border-radius: 200px;
+}
+#seleccionar {
+  position: absolute;
+  top: 50px;
+}

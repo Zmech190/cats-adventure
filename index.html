@@ -58,11 +58,38 @@
         </div>
     </div>
     <div id="productos">
+        <img id="vestir" src="./recursos/vestidor.png" onclick="mostrarvestidor()"></img>
         <img id="producto1" src="./recursos/Tophat.png" onclick="comprar('sombrero')">
         <img id="producto2" src="./recursos/Tegorra(1).png" onclick="comprar('gorra')">
         <img id="producto3" src="./recursos/Nat.png" onclick="comprar('pistola')">
         <img id="producto4" src="./recursos/traffic-cone.png" onclick="comprar('cono')">
-        
+        <img id="producto5" src="./recursos/fire.png" onclick="comprar('fireinthehole')">
+        <img id="producto6" src="./recursos/calaca.png" onclick="comprar('calavera')">
+        <img id="producto7" src="./recursos/guitar.png" onclick="comprar('guitarra')">
+    </div>
+    <div id="vestidor">
+        <img class="cerrar" src="./recursos/close.png" onclick="ocultarvestidor()"></img>
+        <div id="categorias" class="centrado">
+            <button onclick="elegircategoria('sombreros')">Sombreros</button>
+            <button onclick="elegircategoria('accesorios')">Accesorios</button>
+            <button onclick="elegircategoria('tatuajes')">Tatuajes</button>
+            <button onclick="elegircategoria('caras')">Caras</button>
+        </div>
+        <div id="objetos">
+            <div class="contenedor">
+                <div id="carousel">
+                    <div id="tarjeta1" class="item">A</div>
+                    <div id="tarjeta2" class="item">B</div>
+                    <div id="tarjeta3" class="item">C</div>
+                    <div id="tarjeta4" class="item">D</div>
+                    <div id="tarjeta5" class="item">E</div>
+                    <div id="tarjeta6" class="item">F</div>
+                </div>
+            </div>
+            <button id="seleccionar" onclick="seleccionar()">Seleccionar</button>
+            <div class="siguiente" onclick="cambiar('siguiente')"><img src="./recursos/flechaDer.png" alt=""></div>
+            <div class="atras" onclick="cambiar('atras')"><img src="./recursos/flechaIzq.png" alt=""></div>
+        </div>
     </div>
     <script src="sketch.js"></script>
 
