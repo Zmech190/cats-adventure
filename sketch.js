@@ -473,14 +473,16 @@ function guardarnombre() {
     firebase.database().ref("jugadores/"+nickname).once("value",(datos)=>{
         if (datos.exists()){
             monedero = datos.val()["catcoin"]
-            accesorios = datos.val()["accesorios"].key
+            accesorios = datos.val()["accesorios"] ? Object.keys(datos.val()["accesorios"]) : []
             console.log(accesorios);
-            llenarTienda()
         }else{
             firebase.database().ref("jugadores/"+nickname).set({
                 catcoin: 0
             })
+            monedero = 0;
+            accesorios = [];
         }
+        llenarTienda()
     })
 }
 function guardarscore() {
@@ -732,92 +734,55 @@ listadeitems =[
     {nombre:"guitarra",precio:120,imagen:"./recursos/guitar.png",mensaje:": Se dice que el alma de su dueño original sigue atrapada dentro de esta… es bonita pero no sabes tocar guitarra….y ni siquiera tienes pulgares así que no la puedes usar",categoria:"accesorios"},
 ]
 function llenarTienda() {
-    for (let index = 0; index < 7; index++) {
-        for (let index2 = 0; index2 < listadeitems.length; index2++) {
-            const itemdisponible = listadeitems[index2];
-            if(!accesorios.includes(itemdisponible.nombre)){
-                document.getElementById("producto" + index + 1).src = itemdisponible.imagen
-                document.getElementById("producto" + index + 1).onclick = "comprar('"+itemdisponible.nombre+ "')"
-            }
+    espacios_ocupados = 0
+    for (let index2 = 0; index2 < listadeitems.length; index2++) {
+        const itemdisponible = listadeitems[index2];
+        if(espacios_ocupados < 7 && !accesorios.includes(itemdisponible.nombre)){
+            document.getElementById("producto" + (espacios_ocupados + 1)).src = itemdisponible.imagen
+            document.getElementById("producto" + (espacios_ocupados + 1)).addEventListener("click", () => {
+                comprar(itemdisponible.nombre)
+            });
+            espacios_ocupados++
         }
-        
     }
 }
 function comprar(eleccion){
-    item = new Item();
-    item.nombre = eleccion;
-    switch (item.nombre) {
-        case "sombrero":
-            item.precio = 60
-            item.imagen = "./recursos/Tophat.png";
-            item.mensaje =": este sombrero le pertenecio a un ex lider de una mafia .... no sabemos como llego aqui"
-            break;
-        case "gorra":
-            item.precio = 150
-            item.imagen = "./recursos/Tegorra(1).png"
-            item.mensaje = ": algo muy FATAL"
-        break
-        case "pistola":
-            item.precio = 100
-            item.imagen = "./recursos/Nat.png"
-            item.mensaje = ": es solo una simple pistola de airsoft, ¿porque te emocionas al verla?"
-            break
-        case "cono":
-            item.precio = 30
-            item.imagen = "./recursos/traffic-cone.png"
-            item.mensaje = ": este es un simple cono de trafico, supestamente le pertenecia a un asesino sereal pero ...... ¿porque te asustas amigo es solo un rumor?"
-            break
-        case "fireinthehole":
-            item.precio = 333
-            item.imagen = "./recursos/fire.png"
-            item. mensaje = ": FIRE IN THE HOLE  🗣🗣🔥🔥🔥"
-            break
-        case "calavera":
-            item.precio = 50
-            item.imagen = "./recursos/calaca.png"
-            item.mensaje = ": este es el simbolo de una organizacion militar"
-            break
-        case "guitarra":
-            item.precio = 120
-            item.imagen = "./recursos/guitar.png"
-            item.mensaje = ": Se dice que el alma de su dueño original sigue atrapada dentro de esta… es bonita pero no sabes tocar guitarra….y ni siquiera tienes pulgares así que no la puedes usar" 
-            break
-        default:
-            break;
-    }
-    Swal.fire({
-        title: "Estas seguro de esta compra?",
-        text: "Compraras:"+item.nombre+" por "+item.precio+" catcoins"+item.mensaje ,
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        imageUrl: item.imagen,
-        icon: "info",
-        confirmButtonText: "Si, comprar"
-      }).then((result) => {
-        if (result.isConfirmed) {
-            if (monedero >= item.precio) {
-                monedero = monedero - item.precio
-                firebase.database().ref("jugadores/"+nickname+"/accesorios/").update({
-                    [item.nombre]:1
-                })
-                firebase.database().ref("jugadores/"+nickname).update({
-                    catcoin: monedero
-                })
-                Swal.fire({
-                    title: "Comprado",
-                    text: "Pruebatelo en el vestidor",
-                    icon: "success"
-                });
-            }else{
-                Swal.fire({
-                    title: "Sin catcoins",
-                    text: "No tienes suficientes catcoins",
-                    icon: "error"
-                });
+    item = listadeitems.find(producto => producto.nombre === eleccion)
+    if(item !== undefined){
+        Swal.fire({
+            title: "Estas seguro de esta compra?",
+            text: "Compraras:"+item.nombre+" por "+item.precio+" catcoins"+item.mensaje ,
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            imageUrl: item.imagen,
+            icon: "info",
+            confirmButtonText: "Si, comprar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (monedero >= item.precio) {
+                    monedero = monedero - item.precio
+                    firebase.database().ref("jugadores/"+nickname+"/accesorios/").update({
+                        [item.nombre]:1
+                    })
+                    firebase.database().ref("jugadores/"+nickname).update({
+                        catcoin: monedero
+                    })
+                    Swal.fire({
+                        title: "Comprado",
+                        text: "Pruebatelo en el vestidor",
+                        icon: "success"
+                    });
+                }else{
+                    Swal.fire({
+                        title: "Sin catcoins",
+                        text: "No tienes suficientes catcoins",
+                        icon: "error"
+                    });
+                }
             }
-        }
-      });
+        });
+    }
 }
 function recolectar(gato,catcoin){
     catcoin.destroy()
@@ -837,23 +802,7 @@ function elegircategoria(categoria) {
     document.getElementById("categorias").style.display="none"
     document.getElementById("objetos").style.display="flex"
     document.getElementById("vestidor").style.backgroundImage="url(./recursos/purplewall.png)"
-
-    switch (categoria) {
-        case "sombreros":
-            vestidor = listasombreros;
-            break;
-        case "accesorios":
-            vestidor = listaaccesorios;
-            break;
-        case "tatuajes":
-            vestidor = listastatuajes;
-            break;
-        case "caras":
-            vestidor = listacara;
-            break;
-        default:
-            break;
-    }
+    vestidor = listadeitems.filter(producto => producto.categoria === categoria)
     cambiarImagenTarjeta("tarjeta1",vestidor[0]);
     currimg = 0;
     contador = 1;
@@ -889,8 +838,8 @@ function cambiar(direccion){
     carousel.style.transform = "rotateY("+currdeg+"deg)";
     cambiarImagenTarjeta("tarjeta" + contador,vestidor[currimg]);
 }
-function cambiarImagenTarjeta(id,imagen){
-    document.getElementById(id).style.backgroundImage = "url("+imagen+")"
+function cambiarImagenTarjeta(id,producto){
+    document.getElementById(id).style.backgroundImage = "url("+producto.imagen+")"
     document.getElementById(id).style.backgroundRepeat = "no-repeat";
     document.getElementById(id).style.backgroundSize = "contain";
 }
