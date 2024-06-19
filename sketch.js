@@ -64,6 +64,18 @@ function preload() {
     defeat = loadSound("./defeat.mp3")
     repisaimg = loadImage("./recursos/climber.png")
     flechaimg = loadImage("./recursos/flecha.png")
+    sombrero = loadImage("./recursos/Tophat.png")
+    gorra = loadImage("./recursos/Tegorra.png");
+    pistola = loadImage("./recursos/Nat.png");
+    cono = loadImage("./recursos/traffic-cone.png");
+    fireinthehole = loadImage("./recursos/fire.png");
+    calaca = loadImage("./recursos/calaca.png");
+    guitarra = loadImage("./recursos/guitar.png");
+    soprendido = loadImage("./recursos/;0.png");
+    noselaverda = loadImage("./recursos/pistolaroja.png");
+    cara_vencedora = loadImage("./recursos/caraxdd.png");
+    ojos_malvados = loadImage("./recursos/malo.png");
+    espada_tatuaje = loadImage("./recursos/espada_tatuaje.png");
 }
 
 function setup() {
@@ -103,6 +115,8 @@ function setup() {
     repisasdisco = createGroup()
     ahorro = createGroup()
     disco = createGroup()
+    grupodeaccesorios=createGroup()
+    declararAccesorios()
     for (let numrepisa = 0; numrepisa < (width / 90); numrepisa++) {
         repisa = createSprite(90 * numrepisa, 5, 50, 20)
         repisa.addImage(repisaimg)
@@ -363,6 +377,21 @@ function draw() {
             
         }
     })
+    grupodeaccesorios.forEach(accesorio => {
+        if(accesorio.visible){
+            accesorio.y = gato.y + accesorio.yajuste
+            accesorio.depth = accesorio.profundidad
+            if(gato.mirrorX() == -1){
+                accesorio.x = gato.x + accesorio.xajuste
+                accesorio.rotation = accesorio.giro
+                accesorio.mirrorX(1)
+            }else{
+                accesorio.x = gato.x - accesorio.xajuste
+                accesorio.rotation = - accesorio.giro
+                accesorio.mirrorX(-1)
+            }
+        }
+    });
     gato.overlap(enemigos, quitarvida)
     gato.overlap(jefes, quitarvida)
     gato.overlap(ahorro,recolectar)
@@ -723,15 +752,22 @@ class Item{
         this.ajusteY = 0;
     }
 }
-//{nombre:"",precio:0,imagen:"",mensaje:"",categoria:""},
+//{nombre:"",precio:0,imagen:"",mensaje:"",categoria:"",escala:"1",x:0,y:0,giro:0,profundidad:6},
 listadeitems =[
-    {nombre:"sombrero",precio:60,imagen:"./recursos/Tophat.png",mensaje:": este sombrero le pertenecio a un ex lider de una mafia .... no sabemos como llego aqui",categoria:"sombreros"},
-    {nombre:"gorra",precio:150,imagen:"./recursos/Tegorra(1).png",mensaje:": algo muy FATAL",categoria:"sombreros"},
-    {nombre:"pistola",precio:100,imagen:"./recursos/Nat.png",mensaje:": es solo una simple pistola de airsoft, ¿porque te emocionas al verla?",categoria:"accesorios"},
-    {nombre:"cono",precio:30,imagen:"./recursos/traffic-cone.png",mensaje:": este es un simple cono de trafico, supestamente le pertenecia a un asesino sereal pero ...... ¿porque te asustas amigo es solo un rumor?",categoria:"sombreros"},
-    {nombre:"fireinthehole",precio:333,imagen:"./recursos/fire.png",mensaje:"FIRE IN THE HOLE  🗣🗣🔥🔥🔥",categoria:"caras"},
-    {nombre:"calavera",precio:50,imagen:"./recursos/calaca.png",mensaje:": este es el simbolo de una organizacion militar ",categoria:"tatuajes"},
-    {nombre:"guitarra",precio:120,imagen:"./recursos/guitar.png",mensaje:": Se dice que el alma de su dueño original sigue atrapada dentro de esta… es bonita pero no sabes tocar guitarra….y ni siquiera tienes pulgares así que no la puedes usar",categoria:"accesorios"},
+    {nombre:"sombrero",precio:60,imagen:"./recursos/Tophat.png",mensaje:": este sombrero le pertenecio a un ex lider de una mafia .... no sabemos como llego aqui",categoria:"sombreros",escala:"1.04",x:0,y:-50,giro:0,profundidad:4},
+    {nombre:"gorra",precio:150,imagen:"./recursos/Tegorra.png",mensaje:": algo muy FATAL",categoria:"sombreros",escala:"0.25",x:0,y:-30,giro:-10,profundidad:6},
+    {nombre:"pistola",precio:100,imagen:"./recursos/Nat.png",mensaje:": es solo una simple pistola de airsoft, ¿porque te emocionas al verla?",categoria:"accesorios",escala:"0.2",x:-50,y:35,giro:90,profundidad:6},
+    {nombre:"cono",precio:30,imagen:"./recursos/traffic-cone.png",mensaje:": este es un simple cono de trafico, supestamente le pertenecia a un asesino sereal pero ...... ¿porque te asustas amigo es solo un rumor?",categoria:"sombreros",escala:"0.3",x:-20,y:-48,giro:-20,profundidad:6},
+    {nombre:"fireinthehole",precio:333,imagen:"./recursos/fire.png",mensaje:"FIRE IN THE HOLE  🗣🗣🔥🔥🔥",categoria:"caras",escala:"0.3",x:0,y:0,giro:0,profundidad:6},
+    {nombre:"calaca",precio:50,imagen:"./recursos/calaca.png",mensaje:": este es el simbolo de una organizacion militar ",categoria:"tatuajes",escala:"0.14",x:20,y:22,giro:35,profundidad:6},
+    {nombre:"guitarra",precio:120,imagen:"./recursos/guitar.png",mensaje:": Se dice que el alma de su dueño original sigue atrapada dentro de esta… es bonita pero no sabes tocar guitarra….y ni siquiera tienes pulgares así que no la puedes usar",categoria:"accesorios",escala:"1",x:0,y:0,giro:0,profundidad:6},
+    {nombre:"soprendido",precio:20,imagen:"./recursos/;0.png",mensaje:": no puede ser :0",categoria:"caras",escala:"1",x:0,y:0,giro:0,profundidad:6},
+    {nombre:"cara_vencedora",precio:500,imagen:"./recursos/caraxdd.png",mensaje:": bye bye",categoria:"caras",escala:"1",x:0,y:0,giro:0,profundidad:6},
+    {nombre:"ojos_malvados",precio:1000,imagen:"./recursos/malo.png",mensaje:": al ponerte estos ojos sientes una presencia malvada recorriendio por tu espalda",categoria:"caras",escala:"1",x:0,y:0,giro:0,profundidad:6},
+    {nombre:"espada_tatuaje",precio:350,imagen:"./recursos/espada_tatuaje.png",mensaje:": El tatuaje esta chido ............ ¿!LO VAS A COMPRAR O NO¡?",categoria:"tatuajes",escala:"1",x:0,y:0,giro:0,profundidad:6},
+    {nombre:"noselaverda",precio:500,imagen:"./recursos/pistolaroja.png",mensaje:"no se la verda, deje pregunto que poner",categoria:"accesorios",escala:"0.1",x:-44,y:10,giro:270,profundidad:6},
+    //{nombre:"",precio:0,imagen:"",mensaje:"",categoria:"",escala:"1",x:0,y:0,giro:0,profundidad:6},
+    //{nombre:"",precio:0,imagen:"",mensaje:"",categoria:"",escala:"1",x:0,y:0,giro:0,profundidad:6},
 ]
 function llenarTienda() {
     espacios_ocupados = 0
@@ -797,16 +833,22 @@ function ocultarvestidor() {
     document.getElementById("objetos").style.display="none"
     document.getElementById("vestidor").style.backgroundImage="url(./recursos/purplewall.jpg)"
     vestidor = []
+    for (let index = 1; index < 7; index++) {
+        document.getElementById("tarjeta"+index).style.backgroundImage="url()"
+        
+    }
 }
 function elegircategoria(categoria) {
     document.getElementById("categorias").style.display="none"
     document.getElementById("objetos").style.display="flex"
     document.getElementById("vestidor").style.backgroundImage="url(./recursos/purplewall.png)"
-    vestidor = listadeitems.filter(producto => producto.categoria === categoria)
+    vestidor = listadeitems.filter(producto => producto.categoria === categoria && accesorios.includes(producto.nombre))
     cambiarImagenTarjeta("tarjeta1",vestidor[0]);
     currimg = 0;
     contador = 1;
     currdeg = 0;
+    carousel.style.transform = "rotateY("+currdeg+"deg)";
+    cambiarImagenTarjeta("tarjeta" + contador,vestidor[currimg]);
 }
 var carousel = document.getElementById("carousel");
 var currdeg = 0;
@@ -817,17 +859,17 @@ function cambiar(direccion){
       currdeg-=60;
       currimg++;
       contador++;
-      if(currimg >= vestidor.length){
-        curimg = 0;
-      }
       if(contador >= 7){
-        contador = 1;
+          contador = 1;
+          if(currimg >= vestidor.length){
+            curimg = 0;
+          }
       }
     }
     if(direccion == "atras"){
         currdeg+=60;
-        currimg++;
-        contador++;
+        currimg--;
+        contador--;
         if(currimg < 0){
             currimg = vestidor.length - 1
         }
@@ -836,18 +878,73 @@ function cambiar(direccion){
         }
     }
     carousel.style.transform = "rotateY("+currdeg+"deg)";
-    cambiarImagenTarjeta("tarjeta" + contador,vestidor[currimg]);
+    if (vestidor[currimg]){
+        cambiarImagenTarjeta("tarjeta" + contador,vestidor[currimg]);
+       
+    }
 }
 function cambiarImagenTarjeta(id,producto){
+    document.getElementById("seleccionar").value=producto.nombre;
+    document.getElementById("quitar").value=producto.nombre;
     document.getElementById(id).style.backgroundImage = "url("+producto.imagen+")"
     document.getElementById(id).style.backgroundRepeat = "no-repeat";
     document.getElementById(id).style.backgroundSize = "contain";
 }
-accesoriosGrupo = createGroup()
+
 function seleccionar(){
+    probar=document.getElementById("seleccionar").value
+    console.log(probar);
+    ItemAs=listadeitems.find(Item=>Item.nombre===probar)
+    eval("usar_"+ItemAs.categoria).addImage(eval(ItemAs.nombre))
+    eval("usar_"+ItemAs.categoria).visible=true
+    eval("usar_"+ItemAs.categoria).scale = ItemAs.escala
+    eval("usar_"+ItemAs.categoria).nombre = ItemAs.nombre
+    eval("usar_"+ItemAs.categoria).xajuste = ItemAs.x
+    eval("usar_"+ItemAs.categoria).yajuste = ItemAs.y
+    eval("usar_"+ItemAs.categoria).giro = ItemAs.giro
+    eval("usar_"+ItemAs.categoria).profundidad = ItemAs.profundidad
     //item = createSprite(gato.x,gato.y)
     /*firebase.database().ref("jugadores/"+nickname+"/accesorios/"+item.nombre).update({
         usando:1
     })*/
 }
 //index = listaaccesorios.findIndex(x => x.nombre ==="sombrero")
+function declararAccesorios(){
+    usar_sombreros=createSprite(gato.x,gato.y)
+    usar_sombreros.visible=false
+    usar_sombreros.nombre=""
+    usar_sombreros.xajuste=0
+    usar_sombreros.yajuste=0
+    usar_sombreros.giro=0
+    usar_sombreros.profundidad=0
+    grupodeaccesorios.add(usar_sombreros)
+    usar_accesorios=createSprite(gato.x,gato.y)
+    usar_accesorios.visible=false
+    usar_accesorios.nombre=""
+    usar_accesorios.xajuste=0
+    usar_accesorios.yajuste=0
+    usar_accesorios.giro=0
+    usar_accesorios.profundidad=0
+    grupodeaccesorios.add(usar_accesorios)
+    usar_tatuajes=createSprite(gato.x,gato.y)
+    usar_tatuajes.visible=false
+    usar_tatuajes.nombre=""
+    usar_tatuajes.xajuste=0
+    usar_tatuajes.yajuste=0
+    usar_tatuajes.giro=0
+    usar_tatuajes.profundidad=0
+    grupodeaccesorios.add(usar_tatuajes)
+    usar_caras=createSprite(gato.x,gato.y)
+    usar_caras.visible=false
+    usar_caras.nombre=""
+    usar_caras.xajuste=0
+    usar_caras.yajuste=0
+    usar_caras.giro=0
+    usar_caras.profundidad=0
+    grupodeaccesorios.add(usar_caras)
+}
+function quitar(){
+    probar=document.getElementById("quitar").value
+    ItemAs=listadeitems.find(Item=>Item.nombre===probar)
+    eval("usar_"+ItemAs.categoria).visible=false
+}
