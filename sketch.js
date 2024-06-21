@@ -504,6 +504,18 @@ function guardarnombre() {
             monedero = datos.val()["catcoin"]
             accesorios = datos.val()["accesorios"] ? Object.keys(datos.val()["accesorios"]) : []
             console.log(accesorios);
+            if(datos.val()["usar_sombreros"]){
+                equipar(datos.val()["usar_sombreros"])
+            }
+            if(datos.val()["usar_accesorios"]){
+                equipar(datos.val()["usar_accesorios"])
+            }
+            if(datos.val()["usar_tatuajes"]){
+                equipar(datos.val()["usar_tatuajes"])
+            }
+            if(datos.val()["usar_caras"]){
+                equipar(datos.val()["usar_caras"])
+            }
         }else{
             firebase.database().ref("jugadores/"+nickname).set({
                 catcoin: 0
@@ -884,11 +896,20 @@ function cambiar(direccion){
     }
 }
 function cambiarImagenTarjeta(id,producto){
-    document.getElementById("seleccionar").value=producto.nombre;
-    document.getElementById("quitar").value=producto.nombre;
-    document.getElementById(id).style.backgroundImage = "url("+producto.imagen+")"
-    document.getElementById(id).style.backgroundRepeat = "no-repeat";
-    document.getElementById(id).style.backgroundSize = "contain";
+    if(producto){
+        document.getElementById("seleccionar").value=producto.nombre;
+        document.getElementById("quitar").value=producto.nombre;
+        document.getElementById(id).style.backgroundImage = "url("+producto.imagen+")"
+        document.getElementById(id).style.backgroundRepeat = "no-repeat";
+        document.getElementById(id).style.backgroundSize = "contain";
+        document.getElementById("seleccionar").style.visibility = "visible"
+        document.getElementById("quitar").style.visibility = "visible"
+    }
+    else{
+        document.getElementById("seleccionar").style.visibility = "hidden"
+        document.getElementById("quitar").style.visibility = "hidden"
+
+    }
 }
 
 function seleccionar(){
@@ -903,10 +924,20 @@ function seleccionar(){
     eval("usar_"+ItemAs.categoria).yajuste = ItemAs.y
     eval("usar_"+ItemAs.categoria).giro = ItemAs.giro
     eval("usar_"+ItemAs.categoria).profundidad = ItemAs.profundidad
-    //item = createSprite(gato.x,gato.y)
-    /*firebase.database().ref("jugadores/"+nickname+"/accesorios/"+item.nombre).update({
-        usando:1
-    })*/
+    firebase.database().ref("jugadores/"+nickname).update({
+        ["usar_" + ItemAs.categoria]:ItemAs.nombre
+    })
+}
+function equipar(objeto) {
+    ItemAs=listadeitems.find(Item=>Item.nombre===objeto)
+    eval("usar_"+ItemAs.categoria).addImage(eval(ItemAs.nombre))
+    eval("usar_"+ItemAs.categoria).visible=true
+    eval("usar_"+ItemAs.categoria).scale = ItemAs.escala
+    eval("usar_"+ItemAs.categoria).nombre = ItemAs.nombre
+    eval("usar_"+ItemAs.categoria).xajuste = ItemAs.x
+    eval("usar_"+ItemAs.categoria).yajuste = ItemAs.y
+    eval("usar_"+ItemAs.categoria).giro = ItemAs.giro
+    eval("usar_"+ItemAs.categoria).profundidad = ItemAs.profundidad
 }
 //index = listaaccesorios.findIndex(x => x.nombre ==="sombrero")
 function declararAccesorios(){
@@ -947,4 +978,7 @@ function quitar(){
     probar=document.getElementById("quitar").value
     ItemAs=listadeitems.find(Item=>Item.nombre===probar)
     eval("usar_"+ItemAs.categoria).visible=false
+    firebase.database().ref("jugadores/"+nickname).update({
+        ["usar_" + ItemAs.categoria]:null
+    })
 }
