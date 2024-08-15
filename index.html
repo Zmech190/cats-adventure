@@ -24,8 +24,8 @@
 <body onload="marcador()">
     <div id="instrucciones">
         <h2>controles</h2>
-        <img src="./recursos/teclas-1.png.png" alt="">
-        <img src="./recursos/pixelc3.png" class="izquierda">
+        <img src="./recursos/teclas-1.png.png" class="img">
+        <img src="./recursos/pixelc3.png" class="izquierda img">
     </div>
     <div id="celular">
         <div style="float: left; margin-left: 100px;">
@@ -37,13 +37,13 @@
     </div>
     <div id="instrucciones2">
         <h2>controles</h2>
-        <img src="./recursos/teclas-3.png.png" alt="">
-        <img src="./recursos/pixelca2.png" class="acomodo">
+        <img src="./recursos/teclas-3.png.png" class="img">
+        <img src="./recursos/pixelca2.png" class="acomodo img">
     </div>
     <div id="stats">
         <h2>records :</h2>
     </div>
-    <img src="./recursos/cat_adventure_logo.png" id="titulo">
+    <img src="./recursos/cat_adventure_logo.png" id="titulo" class="img">
     <div id="derrota">
         <h1>perdiste</h1>
         <div>
@@ -58,16 +58,18 @@
         </div>
     </div>
     <div id="productos">
-        <img id="vestir" src="./recursos/vestidor.png" onclick="mostrarvestidor()"></img>
-        <img id="producto1" >
-        <img id="producto2" >
-        <img id="producto3" >
-        <img id="producto4" >
-        <img id="producto5" >
-        <img id="producto6" >
-        <img id="producto7">
+        <img id="vestir" src="./recursos/vestidor.png" class="img" onclick="mostrarvestidor()"></img>
+        <img id="logros" src="./recursos/trofeos.jpg" class="img" onclick="mostrarlogros()"></img>
+        <img id="producto1" class="img">
+        <img id="producto2" class="img">
+        <img id="producto3" class="img">
+        <img id="producto4" class="img">
+        <img id="producto5" class="img">
+        <img id="producto6" class="img">
+        <img id="producto7" class="img">
     </div>
     <div id="vestidor">
+        <button id="regresar" onclick="regresar()">regresar</button>
         <img class="cerrar" src="./recursos/close.png" onclick="ocultarvestidor()"></img>
         <div id="categorias" class="centrado">
             <button onclick="elegircategoria('sombreros')">Sombreros</button>
@@ -91,6 +93,41 @@
             <div class="siguiente" onclick="cambiar('siguiente')"><img src="./recursos/flechaDer.png" alt=""></div>
             <div class="atras" onclick="cambiar('atras')"><img src="./recursos/flechaIzq.png" alt=""></div>
         </div>
+    </div>
+    <div id="trofeos">
+        <img class="cerrar" src="./recursos/close.png" onclick="ocultartrofeos()"></img>
+        <div id="flex">
+            <div class="seccion">
+                <img src="./recursos/oso_0.png" class="imglogro">
+            </div>
+            <div class="seccion">
+                <img src="./recursos/oso_0.png" class="imglogro">
+            </div>
+            <div class="seccion">
+                <img src="./recursos/oso_0.png" class="imglogro">
+            </div>
+            <div class="seccion">
+                <img src="./recursos/oso_0.png" class="imglogro">
+            </div>
+
+            <div class="seccion">
+                <img src="./recursos/oso_0.png" class="imglogro">
+            </div>
+            <div class="seccion">
+                <img src="./recursos/oso_0.png" class="imglogro">
+            </div>
+            <div class="seccion">
+                <img src="./recursos/oso_0.png" class="imglogro">
+            </div>
+            <div class="seccion">
+                <img src="./recursos/oso_0.png" class="imglogro">
+            </div>
+        </div>
+    </div>
+    <div id="notificacionlogro">
+        <h2 id="notificaciontitulo"> Logro desbloqueado</h2>
+        <h1 id="nombrelogro">DESTRUIDOSO</h1>
+        <h3 id="mensajelogro">derrota al primer jefe</h3>
     </div>
     <script src="sketch.js"></script>
 
