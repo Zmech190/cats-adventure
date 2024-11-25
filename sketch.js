@@ -16,6 +16,9 @@ var accesorios = []
 var listainvicible = [0,0,0,0]
 var descripcion_logro_visible = false
 var logros= []
+var mensaje = ""
+var contador_mensaje = 0
+var nivel_listo = false
 
 var firebaseConfig = {
     apiKey: "AIzaSyCgqxH1wAC4__RGw6t3_yJxwGKMNBGfFZs",
@@ -35,6 +38,7 @@ function preload() {
     inicio = loadImage("./recursos/inicio1.png")
     piso1 = loadImage("./recursos/piso 1.jpg")
     piso2 = loadImage("./recursos/piso 2.jpg")
+    piso50 = loadImage("./recursos/fondosquenosevanaocupar.jpg")
     tiendita = loadImage("./recursos/tienda.jpg")
     logrosbackground = loadImage("./recursos/pantallalogro.jpg")
     ecenarios = [piso1, piso2]
@@ -49,12 +53,16 @@ function preload() {
     osoataca = loadAnimation("./recursos/oso_a1.png", "./recursos/oso_a2.png", "./recursos/oso_a3.png")
     futbolz = loadAnimation("./recursos/zf_0.png", "./recursos/zf_1.png", "./recursos/zf_2.png", "./recursos/zf_3.png", "./recursos/zf_4.png", "./recursos/zf_5.png", "./recursos/zf_6.png", "./recursos/zf_7.png")
     discoZ = loadAnimation("./recursos/zd_0.png", "./recursos/zd_1.png", "./recursos/zd_2.png", "./recursos/zd_3.png", "./recursos/zd_4.png", "./recursos/zd_5.png")
+    crazedcat = loadAnimation("./recursos/jefegato0.png","./recursos/jefegato1.png","./recursos/jefegato2.png","./recursos/jefegato3.png")
+    crazedcatatack = loadAnimation("./recursos/jefegatoataca0.png","./recursos/jefegatoataca1.png","./recursos/jefegatoataca2.png","./recursos/jefegatoataca3.png")
+    crazedcatcansado = loadAnimation("./recursos/jefegatoataca3.png")
     zombi40 = loadAnimation("./recursos/zombistein_0.png","./recursos/zombistein_1.png","./recursos/zombistein_2.png","./recursos/zombistein_3.png","./recursos/zombistein_4.png","./recursos/zombistein_5.png","./recursos/zombistein_6.png","./recursos/zombistein_7.png")
     suplente = loadAnimation("./recursos/suplente_0.png","./recursos/suplente_1.png","./recursos/suplente_2.png","./recursos/suplente_3.png")
     pistdisc = loadImage("./recursos/pista disco px.png")
     luzdis = loadImage("./recursos/luz pixeleada c.png")
     boladis = loadAnimation("./recursos/boladis_0.png","./recursos/boladis_1.png")
     bolsa = loadImage("./recursos/bolsa.png")
+    cartelimg = loadImage("./recursos/cartel-de-madera.png")
     spincoin = loadAnimation("./recursos/spincoin0.png","./recursos/spincoin1.png","./recursos/spincoin2.png","./recursos/spincoin3.png")
     gatoataca = loadAnimation("./recursos/ca1.png", "./recursos/ca2.png", "./recursos/ca3.png", "./recursos/ca4.png")
     malosanimaciones = [zombi, zombicubeta, calavera, angel, ddode]
@@ -64,9 +72,12 @@ function preload() {
     futmusica = loadSound("./futzom1.mp3")
     tiendamusica = loadSound("./tienda.mp3")
     discomusica = loadSound("./dancezombie1.mp3")
-    zombistainsong = loadSound("./zombie40.mp3")
+    zombistainsong = loadSound("./zombie40.mp3") 
+    catmalointro = loadSound("./catmalointro.mp3")
+    catmalosound = loadSound("./catmalo.mp3")
     logrossound = loadSound("./DISBELIEF_PAPYRUS.mp3")
     defeat = loadSound("./defeat.mp3")
+    notisound = loadSound("./notificacion.mp3")
     pelucadisc = loadImage("./recursos/pelucaxddd.png")
     cascofut = loadImage("./recursos/helmetfut.png")
     repisaimg = loadImage("./recursos/climber.png")
@@ -83,6 +94,7 @@ function preload() {
     cara_vencedora = loadImage("./recursos/caraxdd.png");
     ojos_malvados = loadImage("./recursos/malo.png");
     espada_tatuaje = loadImage("./recursos/espada_tatuaje.png");
+    rango_ataque = loadImage("./recursos/rangodeataque.png");
 }
 
 function setup() {
@@ -102,8 +114,9 @@ function setup() {
     piso2.resize(ancho, alto)
     fondo1 = createSprite(ancho / 2, -alto / 2)
     fondo1.addImage(piso1)
-    gato = createSprite(ancho / 2, alto - 95)
+    gato = createSprite(ancho / 2, alto * 0.8)
     grupodeaccesorios=createGroup()
+    grupoderangoataque=createGroup()
     declararAccesorios()
     gato.addAnimation("gatoquieto", gatoquieto)
     gato.addAnimation("gatocaminar", gatocaminar)
@@ -126,6 +139,7 @@ function setup() {
     jefes = createGroup()
     repisas = createGroup()
     repisasdisco = createGroup()
+    repisasjefe = createGroup()
     ahorro = createGroup()
     disco = createGroup()
     for (let numrepisa = 0; numrepisa < (width / 90); numrepisa++) {
@@ -147,22 +161,45 @@ function setup() {
 function draw() {
     background(200);
     drawSprites();
-    if(nivel>0){
-    fill("black")
-    rect(25, 25, 286, 25)
-    fill("red")
-    rect(25, 25, gato.vida * 22, 25)
-}
     if(nivel!=-2){
-    fill("866c1d")
-    textSize(34)
-    textStyle(BOLD);
-    text(monedero,ancho*0.85,45)
-    cartera.visible=true
+        fill("866c1d")
+        textSize(34)
+        textStyle(BOLD);
+        text(monedero,ancho*0.85,45)
+        cartera.visible=true
     }
     else {
         cartera.visible=false
     }
+    if(nivel>0){
+        if(gato.visible){
+            fill("black")
+            rect(25, 25, 286, 25)
+            fill("red")
+            rect(25, 25, gato.vida * 22, 25)
+            image(cartelimg,width*0.6,height*0.2,220,220)
+            textSize(30)
+            fill("black")
+            text("piso "+nivel,width*0.65,height*0.35)
+        }
+        if (mensaje!="" && jefes.length!=0){
+            fill("black")
+            rect(ancho*0.5, 25, 286, 25)
+            fill("purple")
+            rect(ancho*0.5, 25, ((jefes[0].vida * 100)/jefes[0].maxvida) * 2.86, 25)
+        }
+        if (contador_mensaje<mensaje.length+180 && nivel_listo && mensaje!="") {
+            stroke("White")
+            fill("black")
+            strokeWeight(8)
+            rect(0,4,width,45)
+            noStroke()
+            fill("White")
+            text(mensaje.substring(0,contador_mensaje),10,35)
+            contador_mensaje++
+        }
+}
+  
     if (gato.isTouching(bordes[0]) && nivel==0 ) {
         fondo.velocityY = -12
         tienda.velocityY = -12
@@ -180,6 +217,7 @@ function draw() {
         ocultaraccesorios()
         gato.x = 20
         flecha.visible = true
+        repisasjefe.setVisibleEach(false);
         repisas.forEach(element => {
             element.y = height;
             element.velocityY = -12
@@ -205,6 +243,7 @@ function draw() {
             osomusica.stop()
             futmusica.stop()
             discomusica.stop()
+            catmalosound.stop()
             zombistainsong.stop()
             batalla.setVolume(0.4)
             document.getElementById("instrucciones").style.display = "none"
@@ -216,10 +255,13 @@ function draw() {
         ocultaraccesorios()
         gato.x = 20
         flecha.visible = false
+        repisasjefe.setVisibleEach(false);
         repisas.forEach(element => {
             element.velocityY = 12
         });
-
+        nivel_listo = false
+        mensaje = ""
+        contador_mensaje = 0
     }
     if (enemigos.length == 0 && jefes.length == 0) {
         if(nivel!=-2){
@@ -249,12 +291,18 @@ function draw() {
         else {
             crearmalos()
         }
-
+        repisasjefe.setVisibleEach(true);
         repisas.forEach(element => {
             element.velocityY = 0
             element.y = 5
         });
-        fondo.addImage(random(ecenarios))
+        if(nivel == 49){
+            piso50.resize(width,height)
+            fondo.addImage(piso50)
+        }else{
+            fondo.addImage(random(ecenarios))
+        }
+        nivel_listo=true
     }
     if (fondo1.y >= alto + alto / 2) {
         fondo.velocityY = 0
@@ -273,11 +321,21 @@ function draw() {
         else {
             crearmalos()
         }
+        repisasjefe.setVisibleEach(true);
         repisas.forEach(element => {
             element.velocityY = 0
             element.y = 5
         });
-        fondo1.addImage(random(ecenarios))
+        if(nivel==49){
+           piso50.resize(width,height)
+            
+            fondo1.addImage(piso50)
+        }
+        else{
+            fondo1.addImage(random(ecenarios))
+
+        }
+        nivel_listo = true 
     }
     if (nivel == -1 && ((fondo.y<=-alto/2 && !logrospantalla.abierto) || (logrospantalla.y >= alto * 1.5 && logrospantalla.abierto === true)) && tienda.abierto == false){
         tienda.abierto=true
@@ -302,6 +360,7 @@ function draw() {
         logrospantalla.velocityY=0
         gato.visible = true
         mostraraccesorios()
+        repisasjefe.setVisibleEach(true);
         repisas.forEach(element => {
             element.velocityY = 0
             element.y = 5
@@ -314,12 +373,13 @@ function draw() {
         fondo.velocityY=0
         tienda.velocityY=0
         gato.visible = true
-       mostraraccesorios()
+        mostraraccesorios()
         document.getElementById("instrucciones").style.display = "block"
         document.getElementById("instrucciones2").style.display = "block"
         document.getElementById("titulo").style.display = "block"
         document.getElementById("stats").style.display = "block"
         tiendamusica.stop()
+        repisasjefe.setVisibleEach(true);
         repisas.forEach(element => {
             element.velocityY = 0
             element.y = 5
@@ -351,6 +411,13 @@ function draw() {
         gato.mirrorX(1)
     }
     gato.velocityY += 0.7
+    if (jefe = jefes.find(jefe => jefe.tipo == "gatomalo")) {
+        if(jefe){
+            jefe.velocityY += 0.7
+            jefe.collide(suelo, tocarsuelo)
+            jefe.collide(repisasjefe, tocarrepisa)
+        }
+    }
     if (keyWentUp(77) && gato.getAnimationLabel() != "gatoataca") {
         gato.changeAnimation("gatoataca", gatoataca)
         gato.animation.looping = false
@@ -377,18 +444,77 @@ function draw() {
         })
         jefes.forEach(jefe => {
            if(jefe.tipo!="zombidis"||jefe.y>alto*0.2){
-            perseguir(gato, jefe)
-            ataqueespecial(jefe)
-
-           } else{
+                if(jefe.tipo!="gatomalo"){
+                    
+                    perseguir(gato, jefe)
+                    ataqueespecial(jefe)
+                }
+           }
+           else{
             jefe.bounceOff(repisasdisco,discmirror)
            }
+            
+        })
+    }
+    // Activación de cansancio para gatomalo
+    if (jefes[0] && jefes[0].tipo == "gatomalo") {
+        if (frameCount % 72 == 0 && gatomalo.vida >= 110){
+            ataqueespecial(jefe)
+        }
+        else if (frameCount % 42 == 0 && gatomalo.vida < 110){
+            ataqueespecial(jefe)
+        }
+    }
+    if (frameCount % 42 == 0) {
+        jefes.forEach(jefe => {
+            if(jefe.tipo=="gatomalo"){
+                rangoataque.x=gatomalo.x
+                rangoataque.y=gatomalo.y
+                if (gatomalo.vida >= 110 && gatomalo.invensible == true){
+                    deciciongato=round(random(1,4))
+                    console.log(deciciongato);
+                    switch (deciciongato){
+                        case 1:
+                            if(gatomalo.x < (ancho - 30) && gatomalo > 30){
+                                huir(gato,gatomalo)
+                            }
+                        break
+                        case 2: case 3:
+                            perseguir(gato,gatomalo)
+                        break
+                        case 4:
+                            if (!gatomalo.saltando) {
+                                gatomalo.velocityY = -17
+                                gatomalo.saltando = true
+                                gatomalo.changeAnimation("caminar")
+                                gatomalo.mirrorX(1)
+                            }
+                        break
+                    }
+                    
+                }
+                else if(gatomalo.invensible==true){
+                    perseguir (gato, gatomalo)
+                }
+            }
             
         })
     }
     jefes.forEach(jefe=>{
         if(jefe.tipo=="zombidis"){
             jefe.bounceOff(repisasdisco,discmirror)
+        }
+        if(jefe.tipo=="gatomalo"){
+            if(jefe.guardarfr+69==frameCount && jefe.vida>110){
+                jefe.invensible=true
+                jefe.changeAnimation("caminar")
+                jefe.scale=1.36
+            }
+            if(jefe.guardarfr+49==frameCount && jefe.vida<110){
+                jefe.invensible=true
+                jefe.changeAnimation("caminar")
+                jefe.scale=1.36
+            }        
         }
         if(jefe.guardarfr+33==frameCount){
             switch(jefe.tipo){
@@ -398,13 +524,14 @@ function draw() {
                     break
                 case "futzom":
                     jefe.invensible=false
-                    console.log("no es invencible")
                     perseguir(gato,jefe)
                     break
                 case "zombidis":
                     jefe.x=ancho/2
                     jefe.y=alto*0.2
                     crearsuplentes()
+                break
+                
             }
             
         }
@@ -426,7 +553,9 @@ function draw() {
     });
     gato.overlap(enemigos, quitarvida)
     gato.overlap(jefes, quitarvida)
+    gato.overlap(grupoderangoataque,contraataque)
     gato.overlap(ahorro,recolectar)
+    gato.collide(repisasjefe,tocarrepisa)
     musica()
 
 }
@@ -438,6 +567,24 @@ function perseguir(p1, p2) {
     if (p2.x > p1.x) {
         p2.mirrorX(-1)
         p2.velocityX = random(-2, -4.7)
+    }
+    if (p2.tipo=="gatomalo"){
+        if (!gatomalo.saltando && p1.y-p2.y<0) {
+            gatomalo.velocityY = -17
+            gatomalo.saltando = true
+            gatomalo.changeAnimation("caminar")
+            gatomalo.mirrorX(1)
+        }
+    }
+}
+function huir(p1, p2) {
+    if (p2.x > p1.x) {
+        p2.mirrorX(1)
+        p2.velocityX = random(3, 5.7)
+    }
+    if (p2.x < p1.x) {
+        p2.mirrorX(-1)
+        p2.velocityX = random(-3, -5.7)
     }
 }
 function quitarvida(gato, enemigo) {
@@ -454,9 +601,15 @@ function quitarvida(gato, enemigo) {
             if (enemigo.tipo=="zombidis"){
                 desbloquearlogro("Aguafiestas")
             }
+            if (enemigo.tipo=="zombistein"){
+                desbloquearlogro("YO APLASTO")
+            }
+            if (enemigo.tipo=="gatomalo"){
+                desbloquearlogro("Farzante")
+            }
             loot=round(random(0,1))
             if (loot===1){
-                banco = (enemigo.tipo === undefined) ? round(random(1,6)) : round(random(25,30));
+                banco = (enemigo.tipo === undefined) ? round(random(2,5)) : round(random(25,30));
                for (let index = 0; index < banco; index++) {
                 catcoin=createSprite(enemigo.x+random(-10,10),enemigo.y+random(20,45))
                 catcoin.addAnimation("spin", spincoin)
@@ -483,6 +636,8 @@ function quitarvida(gato, enemigo) {
         osomusica.stop()
         futmusica.stop()
         discomusica.stop()
+        catmalosound.stop()
+        catmalointro.stop()
         defeat.play()
         defeat.setVolume(0.4)
         guardarscore()
@@ -491,6 +646,18 @@ function quitarvida(gato, enemigo) {
 }
 function tocarsuelo(gato, suelo) {
     saltando = false
+    if (gato.tipo=="gatomalo"){
+        gato.saltando=false
+    }
+}
+function tocarrepisa(gato, suelo) {
+    saltando = false
+    if (gato.touching.top){
+        gato.position.y-=100
+    }
+    if (gato.tipo=="gatomalo"){
+        gato.saltando=false
+    }
 }
 function crearmalos() {
     horda = random(3, 11)
@@ -595,17 +762,20 @@ function crearjefe() {
             oso.scale = 2.3
             oso.mirrorX(-1)
             oso.vida = 500
+            oso.maxvida = 500
             batalla.stop()
             oso.invensible=false
             oso.tipo="oso"
             jefes.add(oso)
             osomusica.setVolume(1.2)
+            mensaje="lololol"
             break
         case 20:
             futzom = createSprite(ancho - 10, alto * 0.8)
             futzom.addAnimation("caminar", futbolz)
             futzom.scale = 1.3
-            futzom.vida = 185
+            futzom.vida = 195
+            futzom.maxvida = 195
             futzom.mirrorX(1)
             batalla.stop()
             osomusica.stop()
@@ -613,12 +783,14 @@ function crearjefe() {
             futzom.invensible=false
             futzom.tipo="futzom"
             jefes.add(futzom)
+            mensaje="penal pa messi"
             break
         case 30:
             zombidis = createSprite(ancho/2, alto * 0.8)
             zombidis.addAnimation("caminar", discoZ)
             zombidis.scale = 1.3
             zombidis.vida = 300
+            zombidis.maxvida = 300
             batalla.stop()
             discomusica.setVolume(0.7)
             zombidis.invensible=false
@@ -645,6 +817,7 @@ function crearjefe() {
             boladisco.addAnimation("disco",boladis)
             boladisco.scale=0.3
             zombidis.velocityX=5
+            mensaje = "BATALLA DE BAILE"
             disco.add(boladisco)
             jefes.add(zombidis)
             break
@@ -653,11 +826,49 @@ function crearjefe() {
             zombistein.addAnimation("caminar", zombi40)
             zombistein.scale = 2.5
             zombistein.vida = 600
+            zombistein.maxvida = 600
             batalla.stop()
             zombistein.invensible=false
             zombistein.tipo="zombistein"
             jefes.add(zombistein)
+            mensaje = "YO APLASTO"
             zombistainsong.setVolume(1.2)
+            break
+        case 50:
+            catmalointro.play()
+            gatomalo = createSprite(ancho/2, alto-111)
+            gatomalo.saltando = false
+            gatomalo.addAnimation("caminar", crazedcat)
+            gatomalo.addAnimation("ataca", crazedcatatack)
+            gatomalo.addAnimation("cansado", crazedcatcansado)
+            gatomalo.scale = 1.36
+            gatomalo.vida = 220
+            gatomalo.maxvida = 220
+            batalla.stop()
+            catmalointro.setVolume(0.6)
+            catmalosound.setVolume(0.5)
+            gatomalo.invensible=true
+            gatomalo.tipo="gatomalo"
+            jefes.add(gatomalo)
+            setTimeout(()=>{
+                catmalointro.stop();catmalosound.play()
+            },22000)
+            repisasjefe50=createSprite(ancho*0.33,alto*0.56)
+            repisasjefe50.addImage(repisaimg)
+            repisasjefe50.scale=2
+            repisasjefe50.setCollider("rectangle",0,0,76,20)
+            repisasjefe.add(repisasjefe50)
+            repisasjefe50=createSprite(ancho*0.66,alto*0.56)
+            repisasjefe50.addImage(repisaimg)
+            repisasjefe50.scale=2
+            repisasjefe50.setCollider("rectangle",0,0,76,20)
+            repisasjefe.add(repisasjefe50)
+            rangoataque=createSprite(gatomalo.x,gatomalo.y)
+            rangoataque.addImage(rango_ataque)
+            rangoataque.scale=5.5
+            rangoataque.debug=false
+            grupoderangoataque.add(rangoataque)
+            mensaje = "inserte mensaje largo y profundo"
             break
         
 
@@ -717,6 +928,11 @@ function musica() {
                 zombistainsong.play()
             }
             break;
+        case 50:
+            if (!catmalosound.isPlaying()&&!catmalointro.isPlaying()&&!batalla.isPlaying()) {
+                catmalosound.play()
+            }
+            break
 
         default:
             if (!batalla.isPlaying()) {
@@ -753,6 +969,13 @@ function ataqueespecial(jefe){
                     jefe.velocityX=-16
                 }
                 jefe.invensible=true
+            break
+            case "gatomalo":
+                jefe.invensible=false
+                jefe.changeAnimation("cansado")
+                jefe.velocityX=0
+                jefe.scale=1.78
+            break
         }
         jefe.guardarfr=frameCount
         ataquesorpresa=int(random(2,4))
@@ -822,11 +1045,13 @@ class Item{
     }
 }
 listalogros=[
-    //{nombre:"",obtenido:0,img:"",descripcion:"",recompensamonetaria:0,recompensageneral:"",desbloqueable=1},
+    //{nombre:"",obtenido:0,img:"",descripcion:"",recompensamonetaria:0,recompensageneral:""},
     {nombre:"DESTRUIDOSO",obtenido:0,img:"./recursos/osodestruido.png",descripcion:"derrota al primer jefe",recompensamonetaria:100,recompensageneral:""},
     {nombre:"FOUL",obtenido:0,img:"./recursos/futcasco.png",descripcion:"derrota al segundo jefe",recompensamonetaria:45,recompensageneral:"cascofut"},
     {nombre:"Aguafiestas",obtenido:0,img:"./recursos/discoderrotado.png",descripcion:"derrota al tercer jefe",recompensamonetaria:80,recompensageneral:"pelucadisc"},
-
+    {nombre:"YO APLASTO",obtenido:0,img:"./recursos/logrozombiestain.png",descripcion:"derrota al tercer jefe",recompensamonetaria:100,recompensageneral:"",},
+    {nombre:"Farzante",obtenido:0,img:"./recursos/gatomalologro.png",descripcion:"derrota al quinto jefe",recompensamonetaria:150,recompensageneral:""},
+    
 ]
 //{nombre:"",precio:0,imagen:"",mensaje:"",categoria:"",escala:"1",x:0,y:0,giro:0,profundidad:6,,desbloqueable:0},
 listadeitems =[
@@ -1077,6 +1302,7 @@ function mostrarlogros(){
     gato.visible = false
     gato.x = 20
     flecha.visible = false
+    repisasjefe.setVisibleEach(false);
     repisas.forEach(element => {
         element.y = height;
         element.velocityY = -12
@@ -1159,5 +1385,25 @@ function descripcionlogro(nombre){
         document.getElementById("notificacionlogro").style.animation="salirlogro 7s forwards"
         document.getElementById("notificacionlogro").style.animationIterationCount="1"
         document.getElementById("notificacionlogro").style.display="block"
+        notisound.play()
+        setTimeout(() => {
+            document.getElementById("notificacionlogro").style.animation="none"
+             document.getElementById("notificacionlogro").style.display="none"
+        }, 10000);
+    }
+}
+function contraataque(gato,rangoataque){
+    if (jefes[0] && jefes[0].vida > 0){
+        gatomalo = jefes[0]
+        gatomalo.changeAnimation("ataca")
+        gatomalo.scale = 1.78
+        gatomalo.y = alto-118
+        setTimeout(() => {
+            if (jefes[0] && gatomalo.vida > 0){
+                gatomalo.changeAnimation("caminar")
+                gatomalo.scale = 1.36
+                gatomalo.y = alto-111
+            } 
+        }, 750);
     }
 }
