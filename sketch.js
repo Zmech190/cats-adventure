@@ -39,6 +39,9 @@ function preload() {
     piso1 = loadImage("./recursos/piso 1.jpg")
     piso2 = loadImage("./recursos/piso 2.jpg")
     piso50 = loadImage("./recursos/fondosquenosevanaocupar.jpg")
+    piso51 = loadImage("./recursos/fondobonito.jpg")
+    piso52 = loadImage("./recursos/fondowar.jpg")
+    piso53 = loadImage("./recursos/fondodificil.jpg")
     tiendita = loadImage("./recursos/tienda.jpg")
     logrosbackground = loadImage("./recursos/pantallalogro.jpg")
     ecenarios = [piso1, piso2]
@@ -47,8 +50,12 @@ function preload() {
     calavera = loadAnimation("./recursos/ghost-jumping.png", "./recursos/ghost-standing.png")
     angel = loadAnimation("./recursos/ga1.png", "./recursos/ga2.png", "./recursos/ga3.png")
     ddode = loadAnimation("./recursos/dd1.png", "./recursos/dd2.png", "./recursos/dd3.png")
+    Zomglobo = loadAnimation("./recursos/Zglobo00.png","./recursos/Zglobo01.png","./recursos/Zglobo02.png","./recursos/Zglobo03.png","./recursos/Zglobo04.png","./recursos/Zglobo05.png","./recursos/Zglobo06.png","./recursos/Zglobo07.png","./recursos/Zglobo08.png","./recursos/Zglobo09.png","./recursos/Zglobo10.png","./recursos/Zglobo11.png","./recursos/Zglobo12.png","./recursos/Zglobo13.png","./recursos/Zglobo14.png","./recursos/Zglobo15.png","./recursos/Zglobo16.png","./recursos/Zglobo17.png","./recursos/Zglobo18.png",)
+    explocion = loadAnimation("./recursos/explocion0.png","./recursos/explocion1.png","./recursos/explocion2.png","./recursos/explocion3.png","./recursos/explocion4.png","./recursos/explocion5.png","./recursos/explocion6.png","./recursos/explocion7.png","./recursos/explocion8.png")
+    palomo = loadAnimation("./recursos/palomon0.png","./recursos/palomon1.png","./recursos/palomon2.png","./recursos/palomon3.png","./recursos/palomon4.png","./recursos/palomon5.png",)
     Lucar = loadImage("./recursos/vendedor.png")
     minilucar = loadImage("./recursos/vendedor2.png")
+    zombpogo = loadImage("./recursos/pogozomb.png")
     osocamina = loadAnimation("./recursos/oso_0.png", "./recursos/oso_1.png", "./recursos/oso_2.png", "./recursos/oso_3.png", "./recursos/oso_4.png", "./recursos/oso_5.png")
     osoataca = loadAnimation("./recursos/oso_a1.png", "./recursos/oso_a2.png", "./recursos/oso_a3.png")
     futbolz = loadAnimation("./recursos/zf_0.png", "./recursos/zf_1.png", "./recursos/zf_2.png", "./recursos/zf_3.png", "./recursos/zf_4.png", "./recursos/zf_5.png", "./recursos/zf_6.png", "./recursos/zf_7.png")
@@ -63,6 +70,7 @@ function preload() {
     boladis = loadAnimation("./recursos/boladis_0.png","./recursos/boladis_1.png")
     bolsa = loadImage("./recursos/bolsa.png")
     cartelimg = loadImage("./recursos/cartel-de-madera.png")
+    bombona = loadImage("./recursos/2dBomb.png")
     spincoin = loadAnimation("./recursos/spincoin0.png","./recursos/spincoin1.png","./recursos/spincoin2.png","./recursos/spincoin3.png")
     gatoataca = loadAnimation("./recursos/ca1.png", "./recursos/ca2.png", "./recursos/ca3.png", "./recursos/ca4.png")
     malosanimaciones = [zombi, zombicubeta, calavera, angel, ddode]
@@ -78,6 +86,7 @@ function preload() {
     logrossound = loadSound("./DISBELIEF_PAPYRUS.mp3")
     defeat = loadSound("./defeat.mp3")
     notisound = loadSound("./notificacion.mp3")
+    hardmodemusic = loadSound("./hardmodeMusic.mp3")
     pelucadisc = loadImage("./recursos/pelucaxddd.png")
     cascofut = loadImage("./recursos/helmetfut.png")
     repisaimg = loadImage("./recursos/climber.png")
@@ -112,17 +121,22 @@ function setup() {
     fondo.addImage(inicio)
     piso1.resize(ancho, alto)
     piso2.resize(ancho, alto)
+    piso51.resize(ancho, alto)
+    piso52.resize(ancho,alto)
+    piso53.resize(ancho,alto)
     fondo1 = createSprite(ancho / 2, -alto / 2)
     fondo1.addImage(piso1)
     gato = createSprite(ancho / 2, alto * 0.8)
     grupodeaccesorios=createGroup()
     grupoderangoataque=createGroup()
+    grupobombas=createGroup()
     declararAccesorios()
     gato.addAnimation("gatoquieto", gatoquieto)
     gato.addAnimation("gatocaminar", gatocaminar)
     gato.addAnimation("gatoataca", gatoataca)
     gato.scale = 1.34
     gato.vida = 13
+    gato.maxvida = 13
     vendedor1 = createSprite(ancho * 0.8, alto*0.7)
     vendedor1.addImage("vendedor1",Lucar)
     vendedor1.addImage("vendedor2",minilucar)
@@ -133,7 +147,8 @@ function setup() {
     menu.play()
     menu.setVolume(0.4)
     suelo = createSprite(ancho / 2, alto * 0.9 , ancho, 10)
-    suelo.visible = false
+    suelo.visible = true
+    suelo.debug = true
     bordes = createEdgeSprites()
     enemigos = createGroup()
     jefes = createGroup()
@@ -174,7 +189,7 @@ function draw() {
     if(nivel>0){
         if(gato.visible){
             fill("black")
-            rect(25, 25, 286, 25)
+            rect(25, 25, gato.maxvida*22, 25)
             fill("red")
             rect(25, 25, gato.vida * 22, 25)
             image(cartelimg,width*0.6,height*0.2,220,220)
@@ -281,7 +296,8 @@ function draw() {
         fondo1.y = alto / 2
         gato.vida += 2
         if (gato.vida > 13) {
-            gato.vida = 13
+            gato.vida = nivel<50? 13:15
+            gato.maxvida = nivel<50? 13:15
         }
         gato.visible = true
         mostraraccesorios()
@@ -302,6 +318,7 @@ function draw() {
         }else{
             fondo.addImage(random(ecenarios))
         }
+       
         nivel_listo=true
     }
     if (fondo1.y >= alto + alto / 2) {
@@ -311,7 +328,8 @@ function draw() {
         fondo.y = alto / 2
         gato.vida += 2
         if (gato.vida > 13) {
-            gato.vida = 13
+            gato.vida =nivel<50? 13:15
+            gato.maxvida = nivel<50? 13:15
         }
         gato.visible = true
         mostraraccesorios()
@@ -333,7 +351,28 @@ function draw() {
         }
         else{
             fondo1.addImage(random(ecenarios))
+        }
+        
+        if(nivel == 51){
+            if(!ecenarios.includes(piso51)){
+                ecenarios.push(piso51)
+                ecenarios.push(piso52)
+                ecenarios.push(piso53)
+                ecenarios.splice(0,1)
 
+            }
+            desbloquearlogro("Hora de ponerse serios")
+            if(!malosanimaciones.includes(Zomglobo) || !malosanimaciones.includes(palomo)){
+                malosanimaciones.push(Zomglobo)
+                malosanimaciones.push(Zomglobo)
+                malosanimaciones.push(palomo)
+                malosanimaciones.push(zombpogo)
+                malosanimaciones.push(zombpogo)
+                malosanimaciones.push(palomo)
+                batalla.stop()
+                batalla=hardmodemusic
+                batalla.play()
+            }
         }
         nivel_listo = true 
     }
@@ -440,7 +479,11 @@ function draw() {
 
         enemigos.forEach(malo => {
             perseguir(gato, malo)
-
+            if(malo.tipo=="Zomglobo" || malo.tipo=="zombpogo"){
+                ataqueespecial(malo)
+                console.log("tipo Zomglobo");
+                
+            }
         })
         jefes.forEach(jefe => {
            if(jefe.tipo!="zombidis"||jefe.y>alto*0.2){
@@ -553,20 +596,23 @@ function draw() {
     });
     gato.overlap(enemigos, quitarvida)
     gato.overlap(jefes, quitarvida)
+    gato.overlap(grupobombas, quitarvida)
     gato.overlap(grupoderangoataque,contraataque)
     gato.overlap(ahorro,recolectar)
     gato.collide(repisasjefe,tocarrepisa)
+    enemigos.overlap(suelo, enemigotocarsuelo)
+    suelo.overlap(grupobombas, detonacion)
     musica()
 
 }
 function perseguir(p1, p2) {
     if (p2.x < p1.x) {
         p2.mirrorX(1)
-        p2.velocityX = random(2, 4.7)
+        p2.velocityX = random(p2.rapidezMinima, p2.rapidezMaxima)
     }
     if (p2.x > p1.x) {
         p2.mirrorX(-1)
-        p2.velocityX = random(-2, -4.7)
+        p2.velocityX = random(-p2.rapidezMinima, -p2.rapidezMaxima)
     }
     if (p2.tipo=="gatomalo"){
         if (!gatomalo.saltando && p1.y-p2.y<0) {
@@ -625,7 +671,17 @@ function quitarvida(gato, enemigo) {
 
     }
     else {
-        gato.vida -= 0.07
+        if(nivel>50 && (enemigo.tipo=="calavera"/*||enemigo=="calaveravoladora"*/)){
+            gato.vida-=0.5
+        }
+        else if(enemigo.tipo=="bomba"){
+            if(enemigo.getAnimationLabel()=="explocion"){
+                gato.vida -= 0.07
+                enemigo.destroy
+            }
+        }else{
+            gato.vida -= 0.07
+        }
     }
     if (gato.vida <= 0) {
         gato.remove()
@@ -660,9 +716,16 @@ function tocarrepisa(gato, suelo) {
     }
 }
 function crearmalos() {
-    horda = random(3, 11)
+    horda = nivel<50? random(3, 11):random(5, 15)
     for (var i = 0; i < horda; i++) {
-        malo = createSprite(random(ancho * 0.75, ancho * 2.5), alto * 0.8, 50, 50)
+        if(nivel<50){
+            malo = createSprite(random(ancho * 0.75, ancho * 2.5), alto * 0.8, 50, 50)
+        }
+        else{
+            elegirlado=round(random(0,1))?1:-1
+            malo = createSprite(elegirlado*random(ancho * 0.75, ancho * 2.5), alto * 0.8, 50, 50)
+            console.log(malo.position.x)
+        }
         malo.invensible=false
 
         switch (random(malosanimaciones)) {
@@ -670,35 +733,80 @@ function crearmalos() {
                 malo.addAnimation("caminar", zombi)
                 malo.scale = 3.3
                 malo.mirrorX(-1)
-                malo.vida = 10
+                malo.vida =nivel<50? 10:15
+                malo.rapidezMinima=2
+                malo.rapidezMaxima=4.7
+                malo.tipo="zombi"
                 break
             case zombicubeta:
                 malo.addAnimation("caminar", zombicubeta)
                 malo.scale = 3.3
                 malo.mirrorX(-1)
-                malo.vida = 20
+                malo.vida =nivel<50? 20:35
+                malo.rapidezMinima=nivel<50? 2:2
+                malo.rapidezMaxima=nivel<50? 4.2:3.6
+                malo.tipo="zombicubeta"
                 break
             case calavera:
                 malo.addAnimation("caminar", calavera)
                 malo.scale = 0.6
                 malo.vida = 6
+                malo.rapidezMinima=2
+                malo.rapidezMaxima=4.7
+                malo.tipo="calavera"
                 break
             case angel:
                 malo.addAnimation("caminar", angel)
                 malo.scale = 1.7
                 malo.vida = 1
+                malo.rapidezMinima=nivel<50? 5:10
+                malo.rapidezMaxima=nivel<50? 10:20
+                malo.tipo="angel"
                 break
             case ddode:
                 malo.addAnimation("caminar", ddode)
                 malo.scale = 1.7
                 malo.vida = 10
+                malo.rapidezMinima=2
+                malo.rapidezMaxima=4.7
+                malo.tipo="ddode"
                 break
+            case Zomglobo:
+                malo.addAnimation("caminar",Zomglobo)
+                malo.scale=3.3
+                malo.vida=12
+                malo.rapidezMinima=3
+                malo.rapidezMaxima=5
+                malo.position.y=alto*0.2
+                malo.tipo="Zomglobo"
+                break
+            case palomo:
+                malo.addAnimation("caminar",palomo)
+                malo.scale=1.7
+                malo.vida=10
+                malo.rapidezMinima=5
+                malo.rapidezMaxima=15
+                malo.position.y=alto*0.2
+                malo.tipo="palomo"
+            break
+            case zombpogo:
+                malo.addAnimation("caminar", zombpogo)
+                malo.scale=0.15
+                malo.vida=20
+                malo.rapidezMaxima=8
+                malo.rapidezMinima=8
+                malo.tipo="zombpogo"
+                malo.debug=true
+            break
         }
 
 
 
         enemigos.add(malo)
     }
+
+    ataquesorpresa=int(random(1,2))
+    ataquetimer=0
 }
 function listaenemigos(gato, bordes) {
 
@@ -766,6 +874,8 @@ function crearjefe() {
             batalla.stop()
             oso.invensible=false
             oso.tipo="oso"
+            oso.rapidezMinima=2
+            oso.rapidezMaxima=4.7
             jefes.add(oso)
             osomusica.setVolume(1.2)
             mensaje="lololol"
@@ -782,6 +892,8 @@ function crearjefe() {
             futmusica.setVolume(0.7)
             futzom.invensible=false
             futzom.tipo="futzom"
+            futzom.rapidezMinima=1
+            futzom.rapidezMaxima=3
             jefes.add(futzom)
             mensaje="penal pa messi"
             break
@@ -795,6 +907,8 @@ function crearjefe() {
             discomusica.setVolume(0.7)
             zombidis.invensible=false
             zombidis.tipo="zombidis"
+            zombidis.rapidezMinima=0.5
+            zombidis.rapidezMaxima=3.5
             crearsuplentes()
             repisa_nivel30 = createSprite((ancho*0.43), alto*0.35)
             repisa_nivel30.depth=10
@@ -830,6 +944,8 @@ function crearjefe() {
             batalla.stop()
             zombistein.invensible=false
             zombistein.tipo="zombistein"
+            zombistein.rapidezMinima=2
+            zombistein.rapidezMaxima=4
             jefes.add(zombistein)
             mensaje = "YO APLASTO"
             zombistainsong.setVolume(1.2)
@@ -849,6 +965,8 @@ function crearjefe() {
             catmalosound.setVolume(0.5)
             gatomalo.invensible=true
             gatomalo.tipo="gatomalo"
+            gatomalo.rapidezMinima=2
+            gatomalo.rapidezMaxima=4.7
             jefes.add(gatomalo)
             setTimeout(()=>{
                 catmalointro.stop();catmalosound.play()
@@ -958,8 +1076,8 @@ function ataqueespecial(jefe){
         switch(jefe.tipo){
             case "oso":
                 jefe.changeAnimation("ataca")
-                
                 jefe.y=alto-270
+                ataquesorpresa=int(random(2,4))
                 break
             case "futzom":
                 if(jefe.velocityX>0){
@@ -969,17 +1087,38 @@ function ataqueespecial(jefe){
                     jefe.velocityX=-16
                 }
                 jefe.invensible=true
+                ataquesorpresa=int(random(2,4))
             break
             case "gatomalo":
                 jefe.invensible=false
                 jefe.changeAnimation("cansado")
                 jefe.velocityX=0
                 jefe.scale=1.78
+                ataquesorpresa=int(random(2,4))
+            break
+            case "Zomglobo":
+                bomba=createSprite(jefe.position.x,jefe.position.y)
+                bomba.invensible=true
+                bomba.tipo="bomba"
+                bomba.addAnimation("bomba",bombona)
+                bomba.addAnimation("explocion",explocion)
+                bomba.velocityY=4
+                bomba.scale=0.2
+                bomba.life=230
+                grupobombas.add(bomba)
+                ataquesorpresa=int(random(4,6))
+            break
+            case "zombpogo":
+                jefe.velocityY=-7
+                ataquesorpresa=int(random(6,6))
+                console.log("zombpogo ataque");
+                
+                setTimeout(() => {
+                    jefe.velocityY=7
+                }, 2000);
             break
         }
         jefe.guardarfr=frameCount
-        ataquesorpresa=int(random(2,4))
-        console.log("ataque hecho")
         ataquetimer=0
     }
 }
@@ -991,6 +1130,8 @@ function crearsuplentes() {
         malo.addAnimation("caminar", suplente)
         malo.scale = 1.5
         malo.vida = 12
+        malo.rapidezMinima=2
+        malo.rapidezMaxima=4.7
         enemigos.add(malo)
     }
 }
@@ -1051,7 +1192,10 @@ listalogros=[
     {nombre:"Aguafiestas",obtenido:0,img:"./recursos/discoderrotado.png",descripcion:"derrota al tercer jefe",recompensamonetaria:80,recompensageneral:"pelucadisc"},
     {nombre:"YO APLASTO",obtenido:0,img:"./recursos/logrozombiestain.png",descripcion:"derrota al tercer jefe",recompensamonetaria:100,recompensageneral:"",},
     {nombre:"Farzante",obtenido:0,img:"./recursos/gatomalologro.png",descripcion:"derrota al quinto jefe",recompensamonetaria:150,recompensageneral:""},
-    
+    {nombre:"A la moda",obtenido:0,img:"./recursos/gatobonito.jpg",descripcion:"Ponte un conjunto de accesorios",recompensamonetaria:10,recompensageneral:""},
+    {nombre:"Hora de ponerse serios",obtenido:0,img:"./recursos/mododificil.png",descripcion:"LLega al modo dificil (supera el nivel 50)",recompensamonetaria:100,recompensageneral:""},    
+    //{nombre:"",obtenido:0,img:"",descripcion:"",recompensamonetaria:0,recompensageneral:""},
+   
 ]
 //{nombre:"",precio:0,imagen:"",mensaje:"",categoria:"",escala:"1",x:0,y:0,giro:0,profundidad:6,,desbloqueable:0},
 listadeitems =[
@@ -1059,16 +1203,16 @@ listadeitems =[
     {nombre:"gorra",precio:150,imagen:"./recursos/Tegorra.png",mensaje:": algo muy FATAL",categoria:"sombreros",escala:"0.25",x:0,y:-30,giro:-10,profundidad:6,desbloqueable:0},
     {nombre:"pistola",precio:100,imagen:"./recursos/Nat.png",mensaje:": es solo una simple pistola de airsoft, ¿porque te emocionas al verla?",categoria:"accesorios",escala:"0.2",x:-50,y:35,giro:90,profundidad:6,desbloqueable:0},
     {nombre:"cono",precio:30,imagen:"./recursos/traffic-cone.png",mensaje:": este es un simple cono de trafico, supestamente le pertenecia a un asesino sereal pero ...... ¿porque te asustas amigo es solo un rumor?",categoria:"sombreros",escala:"0.3",x:-20,y:-48,giro:-20,profundidad:7,desbloqueable:0},
-    {nombre:"fireinthehole",precio:333,imagen:"./recursos/fire.png",mensaje:"FIRE IN THE HOLE  🗣🗣🔥🔥🔥",categoria:"caras",escala:"0.3",x:0,y:0,giro:0,profundidad:6,desbloqueable:0},
+    {nombre:"fireinthehole",precio:333,imagen:"./recursos/fire.png",mensaje:"FIRE IN THE HOLE  🗣🗣🔥🔥🔥",categoria:"caras",escala:"0.13",x:-10,y:18,giro:0,profundidad:5,desbloqueable:0},
     {nombre:"calaca",precio:50,imagen:"./recursos/calaca.png",mensaje:": este es el simbolo de una organizacion militar ",categoria:"tatuajes",escala:"0.14",x:20,y:22,giro:35,profundidad:6,desbloqueable:0},
-    {nombre:"guitarra",precio:120,imagen:"./recursos/guitar.png",mensaje:": Se dice que el alma de su dueño original sigue atrapada dentro de esta… es bonita pero no sabes tocar guitarra….y ni siquiera tienes pulgares así que no la puedes usar",categoria:"accesorios",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:0},
+    //{nombre:"guitarra",precio:120,imagen:"./recursos/guitar.png",mensaje:": Se dice que el alma de su dueño original sigue atrapada dentro de esta… es bonita pero no sabes tocar guitarra….y ni siquiera tienes pulgares así que no la puedes usar",categoria:"accesorios",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:0},
     {nombre:"soprendido",precio:20,imagen:"./recursos/;0.png",mensaje:": no puede ser :0",categoria:"caras",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:0},
-    {nombre:"cara_vencedora",precio:500,imagen:"./recursos/caraxdd.png",mensaje:": bye bye",categoria:"caras",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:0},
-    {nombre:"ojos_malvados",precio:1000,imagen:"./recursos/malo.png",mensaje:": al ponerte estos ojos sientes una presencia malvada recorriendio por tu espalda",categoria:"caras",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:0},
-    {nombre:"espada_tatuaje",precio:350,imagen:"./recursos/espada_tatuaje.png",mensaje:": El tatuaje esta chido ............ ¿!LO VAS A COMPRAR O NO¡?",categoria:"tatuajes",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:0},
+    //{nombre:"cara_vencedora",precio:500,imagen:"./recursos/caraxdd.png",mensaje:": bye bye",categoria:"caras",escala:"0.19",x:-5,y:17,giro:0,profundidad:5,desbloqueable:0},
+    //{nombre:"ojos_malvados",precio:1000,imagen:"./recursos/malo.png",mensaje:": al ponerte estos ojos sientes una presencia malvada recorriendio por tu espalda",categoria:"caras",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:0},
+    {nombre:"espada_tatuaje",precio:350,imagen:"./recursos/espada_tatuaje.png",mensaje:": El tatuaje esta chido ............ ¿!LO VAS A COMPRAR O NO¡?",categoria:"tatuajes",escala:"0.15",x:16,y:16,giro:0,profundidad:5,desbloqueable:0},
     {nombre:"noselaverda",precio:500,imagen:"./recursos/pistolaroja.png",mensaje:"no se la verda, deje pregunto que poner",categoria:"accesorios",escala:"0.1",x:-44,y:10,giro:270,profundidad:6,desbloqueable:0},
-    {nombre:"cascofut",precio:0,imagen:"./recursos/helmetfut.png",mensaje:"",categoria:"sombreros",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:1},
-    {nombre:"pelucadisc",precio:0,imagen:"./recursos/pelucaxddd.png",mensaje:"",categoria:"sombreros",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:1},
+    {nombre:"cascofut",precio:0,imagen:"./recursos/helmetfut.png",mensaje:"",categoria:"sombreros",escala:"0.33",x:-14,y:-3,giro:0,profundidad:6,desbloqueable:1},
+    //{nombre:"pelucadisc",precio:0,imagen:"./recursos/pelucaxddd.png",mensaje:"",categoria:"sombreros",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:1},
     //{nombre:"",precio:0,imagen:"",mensaje:"",categoria:"",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:0},
     //{nombre:"",precio:0,imagen:"",mensaje:"",categoria:"",escala:"1",x:0,y:0,giro:0,profundidad:6,desbloqueable:0},
 ]
@@ -1138,7 +1282,9 @@ function ocultarvestidor() {
     vestidor = []
     for (let index = 1; index < 7; index++) {
         document.getElementById("tarjeta"+index).style.backgroundImage="url()"
-        
+    }
+    if (usar_sombreros.visible==1 && usar_accesorios.visible==1 && usar_tatuajes.visible==1 && usar_caras.visible==1){
+        desbloquearlogro("A la moda")
     }
 }
 function regresar(){
@@ -1390,6 +1536,7 @@ function descripcionlogro(nombre){
             document.getElementById("notificacionlogro").style.animation="none"
              document.getElementById("notificacionlogro").style.display="none"
         }, 10000);
+        listalogros[index].obtenido=1
     }
 }
 function contraataque(gato,rangoataque){
@@ -1405,5 +1552,19 @@ function contraataque(gato,rangoataque){
                 gatomalo.y = alto-111
             } 
         }, 750);
+    }
+}
+function detonacion(suelo, bomba){
+    bomba.velocityY=0
+    setTimeout(() => {
+        bomba.changeAnimation("explocion")
+        bomba.scale=3
+    }, 3000);
+}
+function enemigotocarsuelo(enemigo,suelo){
+    if(enemigo.tipo=="zombpogo"){
+        console.log("aterrizo")
+        enemigo.velocityY=0
+        enemigo.position.y=suelo.position.y-(enemigo.height/2)
     }
 }
