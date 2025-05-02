@@ -147,8 +147,8 @@ function setup() {
     menu.play()
     menu.setVolume(0.4)
     suelo = createSprite(ancho / 2, alto * 0.9 , ancho, 10)
-    suelo.visible = true
-    suelo.debug = true
+    suelo.visible = false
+    suelo.debug = false
     bordes = createEdgeSprites()
     enemigos = createGroup()
     jefes = createGroup()
@@ -543,6 +543,13 @@ function draw() {
             
         })
     }
+    enemigos.forEach(enemigo=>{
+        if (enemigo.tipo=="zombpogo" && enemigo.saltar && enemigo.guardarfr+60==frameCount){
+            enemigo.velocityY=7
+        }
+    })
+
+    
     jefes.forEach(jefe=>{
         if(jefe.tipo=="zombidis"){
             jefe.bounceOff(repisasdisco,discmirror)
@@ -727,6 +734,7 @@ function crearmalos() {
             console.log(malo.position.x)
         }
         malo.invensible=false
+        malo.saltar=false
 
         switch (random(malosanimaciones)) {
             case zombi:
@@ -791,12 +799,13 @@ function crearmalos() {
             break
             case zombpogo:
                 malo.addAnimation("caminar", zombpogo)
+                malo.position.y=alto*0.65
                 malo.scale=0.15
                 malo.vida=20
                 malo.rapidezMaxima=8
                 malo.rapidezMinima=8
                 malo.tipo="zombpogo"
-                malo.debug=true
+                malo.debug=false
             break
         }
 
@@ -1109,13 +1118,15 @@ function ataqueespecial(jefe){
                 ataquesorpresa=int(random(4,6))
             break
             case "zombpogo":
-                jefe.velocityY=-7
-                ataquesorpresa=int(random(6,6))
-                console.log("zombpogo ataque");
+                if (jefe.saltar==false){
+                    jefe.saltar=true
+
                 
-                setTimeout(() => {
-                    jefe.velocityY=7
-                }, 2000);
+                    jefe.velocityY=-7
+                    ataquesorpresa=int(random(1,1))
+                    console.log("zombpogo ataque");
+                    
+                }
             break
         }
         jefe.guardarfr=frameCount
@@ -1563,8 +1574,11 @@ function detonacion(suelo, bomba){
 }
 function enemigotocarsuelo(enemigo,suelo){
     if(enemigo.tipo=="zombpogo"){
-        console.log("aterrizo")
-        enemigo.velocityY=0
-        enemigo.position.y=suelo.position.y-(enemigo.height/2)
+        if( enemigo.saltar){
+            console.log("aterrizo")
+            enemigo.velocityY=0
+            enemigo.position.y-=20
+        }
+    enemigo.saltar=false
     }
 }
